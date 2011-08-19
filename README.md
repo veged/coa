@@ -48,3 +48,8 @@ exports.COA = function() {
             .end()
 };
 ````
+
+## TODO
+* Program API for use COA-covered programs as modules
+* Localization
+* Shell completion
