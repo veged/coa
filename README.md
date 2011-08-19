@@ -53,3 +53,4 @@ exports.COA = function() {
 * Program API for use COA-covered programs as modules
 * Localization
 * Shell completion
+* Configs
