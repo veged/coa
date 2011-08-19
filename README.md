@@ -54,5 +54,5 @@ exports.COA = function() {
 * Localization
 * Shell completion
 * Configs
-** Aliases
-** Defaults
+  * Aliases
+  * Defaults
