@@ -7,33 +7,34 @@ or write your own like me.
 ## Examples
 
 ````javascript
-require('coa').Cmd() // main command declaration
-    .name(process.argv[1])
-    .title('My awesome command line util')
-    .helpful()
-    .opt()
-        .name('version').short('v').long('version')
-        .title('Version')
-        .type(Boolean)
-        .act(function(opts) {
-            opts.version &&
-                this.exit(
-                    JSON.parse(require('fs').readFileSync(__dirname + '/package.json'))
-                        .version);
+require('coa').Cmd() // main (top level) command declaration
+    .name(process.argv[1]) // set top level command name from program name
+    .title('My awesome command line util') // title for use in text messages
+    .helpful() // make command "helpful", i.e. options -h --help with usage message
+    .opt() // add some option
+        .name('version') // name for use in API
+        .title('Version') // title for use in text messages
+        .short('v') // short key: -v
+        .long('version') // long key: --version
+        .type(Boolean) // type Boolean for options without value
+        .act(function(opts) { // add action for option
+            this.exit( // exit program with code 0 and text message
+                JSON.parse(require('fs').readFileSync(__dirname + '/package.json'))
+                    .version);
         })
-        .end()
+        .end() // end option chain and return to main command
     .cmd().name('subcommand').apply(require('./subcommand').COA).end() // load subcommand from module
     .cmd() // inplace subcommand declaration
-        .name('othercommand')
-        .title('Awesome other subcommand').helpful()
+        .name('othercommand').title('Awesome other subcommand').helpful()
         .opt()
-            .name('input').short('i').long('input')
-            .title('input file, required')
-            .validate(function(f) { return require('fs').createReadStream(f) })
-            .required()
-            .end()
-        .end()
-    .parse(process.argv.slice(2));
+            .name('input').title('input file, required')
+            .short('i').long('input')
+            .validate(function(v) { // validator function, also for translate simple values
+                return require('fs').createReadStream(v) })
+            .required() // make option required
+            .end() // end option chain and return to command
+        .end() // end subcommand chain and return to parent command
+    .parse(process.argv.slice(2)); // parse and run on process.argv
 ````
 
 ````javascript
@@ -42,8 +43,8 @@ exports.COA = function() {
     this
         .title('Awesome subcommand').helpful()
         .opt()
-            .name('output').short('o').long('output')
-            .title('output file')
+            .name('output').title('output file')
+            .short('o').long('output')
             .output() // use default preset for "output" option declaration
             .end()
 };
