@@ -22,7 +22,7 @@ require('coa').Cmd() // main command declaration
                 JSON.parse(require('fs').readFileSync(__dirname + '/package.json'))
                     .version);
     })
-    .cmd().name('subcommand).apply(require('./subcommand').COA).end() // load subcommand from module
+    .cmd().name('subcommand').apply(require('./subcommand').COA).end() // load subcommand from module
     .cmd() // inplace subcommand declaration
         .name('othercommand')
         .title('Awesome other subcommand').helpful()
