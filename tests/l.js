@@ -1,12 +1,19 @@
-require('coa').Cmd()
+require('../lib/coa').Cmd()
     .name('bla')
     .title('Bla bla bla')
     .helpful()
     .opt()
-        .name('long').title('Long')
-        .short('long').long('long')
+        .name('long1').title('Long1')
+        .short('l').long('long1')
         .act(function(opts) {
-            this.exit(opts.long);
+            console.log(opts.long1);
         })
         .end()
-    .parse(['--long', '111']);
+    .opt()
+        .name('long2').title('Long2')
+        .short('L').long('long2')
+        .act(function(opts) {
+            console.log(opts.long2);
+        })
+        .end()
+    .parse(['--long1', '111', '--long2', '222']);
