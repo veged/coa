@@ -16,4 +16,5 @@ require('../lib/coa').Cmd()
             console.log(opts.long2);
         })
         .end()
+    .act(function(opts) { console.log(opts) })
     .parse(['--long1', '111', '--long2', '222']);

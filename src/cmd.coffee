@@ -173,7 +173,7 @@ exports.Cmd = class Cmd
         (if this._cmd is this then '' else @_cmd._fullName() + ' ') + path.basename(@_name)
 
     _ejectOpt: (opts, opt) ->
-        if (pos = i for o, i in opts when o is opts[i])?
+        if (pos = opts.indexOf(opt)) >= 0
             if opts[pos]._push
                 opts[pos]
             else
@@ -195,7 +195,7 @@ exports.Cmd = class Cmd
 
                 nonParsedArgs or= @_args.concat()
 
-                if m = i.match /^--(\w[\w-_]*)=(.*)$/
+                if m = i.match /^(--\w[\w-_]*)=(.*)$/
                     i = m[1]
                     argv.unshift m[2]
 
