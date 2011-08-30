@@ -2,7 +2,7 @@ sys = require 'sys'
 path = require 'path'
 Color = require('./color').Color
 
-inspect = require('eyes').inspector { maxLength: 99999, stream: process.stderr }
+#inspect = require('eyes').inspector { maxLength: 99999, stream: process.stderr }
 
 ###*
 ## Command
