@@ -31,7 +31,7 @@ require('coa').Cmd() // main (top level) command declaration
             .short('i').long('input')
             .val(function(v) { // validator function, also for translate simple values
                 return require('fs').createReadStream(v) })
-            .required() // make option required
+            .req() // make option required
             .end() // end option chain and return to command
         .end() // end subcommand chain and return to parent command
     .parse(process.argv.slice(2)); // parse and run on process.argv
@@ -154,8 +154,8 @@ Makes an option accepts multiple values.<br>
 Otherwise, the value will be used by the latter passed.<br>
 **@returns** *COA.Opt* `this` instance (for chainability)
 
-#### Opt.required
-Makes an option required.<br>
+#### Opt.req
+Makes an option req.<br>
 **@returns** *COA.Opt* `this` instance (for chainability)
 
 #### Opt.val
@@ -213,8 +213,8 @@ Makes an argument accepts multiple values.<br>
 Otherwise, the value will be used by the latter passed.<br>
 **@returns** *COA.Arg* `this` instance (for chainability)
 
-#### Arg.required
-Makes an argument required.<br>
+#### Arg.req
+Makes an argument req.<br>
 **@returns** *COA.Arg* `this` instance (for chainability)
 
 #### Arg.val

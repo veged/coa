@@ -65,8 +65,8 @@ exports.Opt = class Opt
     Makes an option required.
     @returns {COA.Opt} this instance (for chainability)
     ###
-    required: ->
-        @_required = true
+    req: ->
+        @_req = true
         @
 
     ###*

@@ -1,0 +1,10 @@
+require('../lib/coa').Cmd()
+    .name('req')
+    .title('Bla bla bla')
+    .helpful()
+    .opt()
+        .name('bla').title('Bla')
+        .short('b').long('bla')
+        .req()
+        .end()
+    .parse([]);

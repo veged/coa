@@ -41,7 +41,7 @@ exports.Arg = class Arg
     Makes an argument required.
     @returns {COA.Arg} this instance (for chainability)
     ###
-    required: Opt::required
+    req: Opt::req
 
     ###*
     Set a validation (or value) function for argument.

@@ -226,7 +226,7 @@ exports.Cmd = class Cmd
         if not (this._helpful and opts.help)
             nonParsed = nonParsedOpts.concat nonParsedArgs
             while i = nonParsed.shift()
-                if i._required and i._checkParsed opts, args
+                if i._req and i._checkParsed opts, args
                     @errorExit i._requiredText()
                 if '_def' of i
                     i._saveVal opts, i._def
