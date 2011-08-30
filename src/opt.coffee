@@ -70,14 +70,15 @@ exports.Opt = class Opt
         @
 
     ###*
-    Set a validation function for option.
+    Set a validation (or value) function for option.
     Value from command line passes through before becoming available from API.
-    @param {Function} _validate validating function,
+    Using for validation and convertion simple types to any values.
+    @param {Function} _val validating function,
         invoked in the context of option instance
         and has one parameter with value from command line
     @returns {COA.Opt} this instance (for chainability)
     ###
-    validate: (@_validate) -> @
+    val: (@_val) -> @
 
     ###*
     Set a default value for option.
@@ -95,7 +96,7 @@ exports.Opt = class Opt
     output: ->
         @
             .def(process.stdout)
-            .validate (v) ->
+            .val (v) ->
                 if typeof v is 'string'
                     if v is '-'
                         process.stdout
@@ -122,7 +123,7 @@ exports.Opt = class Opt
         @
 
     _saveVal: (opts, val) ->
-        if @_validate then val = @_validate val
+        if @_val then val = @_val val
         if @_arr
             (opts[@_name] or= []).push val
         else

@@ -29,7 +29,7 @@ require('coa').Cmd() // main (top level) command declaration
         .opt()
             .name('input').title('input file, required')
             .short('i').long('input')
-            .validate(function(v) { // validator function, also for translate simple values
+            .val(function(v) { // validator function, also for translate simple values
                 return require('fs').createReadStream(v) })
             .required() // make option required
             .end() // end option chain and return to command
@@ -158,10 +158,11 @@ Otherwise, the value will be used by the latter passed.<br>
 Makes an option required.<br>
 **@returns** *COA.Opt* `this` instance (for chainability)
 
-#### Opt.validate
-Set a validation function for option.<br>
+#### Opt.val
+Set a validation (or value) function for argument.<br>
 Value from command line passes through before becoming available from API.<br>
-**@param** *Function* `_validate` validating function,
+Using for validation and convertion simple types to any values.<br>
+**@param** *Function* `_val` validating function,
     invoked in the context of option instance
     and has one parameter with value from command line<br>
 **@returns** *COA.Opt* `this` instance (for chainability)
@@ -216,10 +217,11 @@ Otherwise, the value will be used by the latter passed.<br>
 Makes an argument required.<br>
 **@returns** *COA.Arg* `this` instance (for chainability)
 
-#### Arg.validate
-Set a validation function for argument.<br>
+#### Arg.val
+Set a validation (or value) function for argument.<br>
 Value from command line passes through before becoming available from API.<br>
-**@param** *Function* `_validate` validating function,
+Using for validation and convertion simple types to any values.<br>
+**@param** *Function* `_val` validating function,
     invoked in the context of argument instance
     and has one parameter with value from command line<br>
 **@returns** *COA.Arg* `this` instance (for chainability)

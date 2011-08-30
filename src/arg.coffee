@@ -44,14 +44,15 @@ exports.Arg = class Arg
     required: Opt::required
 
     ###*
-    Set a validation function for argument.
+    Set a validation (or value) function for argument.
     Value from command line passes through before becoming available from API.
-    @param {Function} _validate validating function,
+    Using for validation and convertion simple types to any values.
+    @param {Function} _val validating function,
         invoked in the context of argument instance
         and has one parameter with value from command line
     @returns {COA.Arg} this instance (for chainability)
     ###
-    validate: Opt::validate
+    val: Opt::val
 
     ###*
     Set a default value for argument.
