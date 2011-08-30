@@ -174,7 +174,7 @@ exports.Cmd = class Cmd
 
     _ejectOpt: (opts, opt) ->
         if (pos = opts.indexOf(opt)) >= 0
-            if opts[pos]._push
+            if opts[pos]._arr
                 opts[pos]
             else
                 opts.splice(pos, 1)[0]
@@ -216,7 +216,7 @@ exports.Cmd = class Cmd
             # arg
             else
                 if arg = (nonParsedArgs or= @_args.concat()).shift()
-                    if arg._push then nonParsedArgs.unshift arg
+                    if arg._arr then nonParsedArgs.unshift arg
                     arg._parse i, args
                 else
                     @errorExit 'Unknown argument', i

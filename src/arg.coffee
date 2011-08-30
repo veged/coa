@@ -35,7 +35,7 @@ exports.Arg = class Arg
     Otherwise, the value will be used by the latter passed.
     @returns {COA.Arg} this instance (for chainability)
     ###
-    push: Opt::push
+    arr: Opt::arr
 
     ###*
     Makes an argument required.

@@ -58,8 +58,8 @@ exports.Opt = class Opt
     Otherwise, the value will be used by the latter passed.
     @returns {COA.Opt} this instance (for chainability)
     ###
-    push: ->
-        @_push = true
+    arr: ->
+        @_arr = true
         @
 
     ###*
@@ -124,7 +124,7 @@ exports.Opt = class Opt
 
     _saveVal: (opts, val) ->
         if @_validate then val = @_validate val
-        if @_push
+        if @_arr
             (opts[@_name] or= []).push val
         else
             opts[@_name] = val

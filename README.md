@@ -150,7 +150,7 @@ Set a type of option. Mainly using with Boolean for options without value.<br>
 **@param** *Object* `_type`<br>
 **@returns** *COA.Opt* `this` instance (for chainability)
 
-#### Opt.push
+#### Opt.arr
 Makes an option accepts multiple values.<br>
 Otherwise, the value will be used by the latter passed.<br>
 **@returns** *COA.Opt* `this` instance (for chainability)
@@ -208,7 +208,7 @@ Set a long description for argument to be used anywhere in text messages.<br>
 **@param** *String* `_title` argument title<br>
 **@returns** *COA.Arg* `this` instance (for chainability)
 
-#### Arg.push
+#### Arg.arr
 Makes an argument accepts multiple values.<br>
 Otherwise, the value will be used by the latter passed.<br>
 **@returns** *COA.Arg* `this` instance (for chainability)
