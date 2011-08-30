@@ -145,9 +145,8 @@ Set a short key for option to be used with double hyphens from command line.<br>
 **@param** *String* `_long`<br>
 **@returns** *COA.Opt* `this` instance (for chainability)
 
-#### Opt.type
-Set a type of option. Mainly using with Boolean for options without value.<br>
-**@param** *Object* `_type`<br>
+#### Opt.flag
+Make an option boolean, i.e. option without value.<br>
 **@returns** *COA.Opt* `this` instance (for chainability)
 
 #### Opt.arr

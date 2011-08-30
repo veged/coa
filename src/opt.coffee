@@ -45,12 +45,11 @@ exports.Opt = class Opt
     long: (@_long) -> @_cmd._optsByKey['--' + _long] = @
 
     ###*
-    Set a type of option. Mainly using with Boolean for options without value.
-    @param {Object} _type
+    Make an option boolean, i.e. option without value.
     @returns {COA.Opt} this instance (for chainability)
     ###
-    type: (@_type) ->
-        @_flag = @_type is Boolean
+    flag: () ->
+        @_flag = true
         @
 
     ###*

@@ -105,7 +105,7 @@ exports.Cmd = class Cmd
         @opt()
             .name('help').title('Help')
             .short('h').long('help')
-            .type(Boolean)
+            .flag()
             .act (opts, args) ->
                 @exit @usage()
             .end()

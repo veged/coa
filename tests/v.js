@@ -5,7 +5,7 @@ require('../lib/coa').Cmd()
     .opt()
         .name('version').title('Version')
         .short('v').long('version')
-        .type(Boolean)
+        .flag()
         .act(function(opts) {
             this.exit(
                 JSON.parse(require('fs').readFileSync(__dirname + '/../package.json'))
