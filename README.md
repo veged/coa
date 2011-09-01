@@ -1,7 +1,7 @@
 # Command-Option-Argument
 
 COA is a yet another parser for command line options.
-You can choose one of the [existing modules](https://github.com/joyent/node/wiki/modules#parsers-commandline),
+You can choose one of the [existing modules](https://github.com/joyent/node/wiki/modules#wiki-parsers-commandline),
 or write your own like me.
 
 ## Examples
