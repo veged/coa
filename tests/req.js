@@ -7,4 +7,4 @@ require('../lib/coa').Cmd()
         .short('b').long('bla')
         .req()
         .end()
-    .parse([]);
+    .run([]);

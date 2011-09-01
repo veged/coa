@@ -10,4 +10,4 @@ require('../lib/coa').Cmd()
             console.log(opts.arr);
         })
         .end()
-    .parse(['-a', '1', '-a', '2']);
+    .run(['-a', '1', '-a', '2']);

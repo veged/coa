@@ -18,9 +18,9 @@ require('coa').Cmd() // main (top level) command declaration
         .long('version') // long key: --version
         .type(Boolean) // type Boolean for options without value
         .act(function(opts) { // add action for option
-            this.exit( // exit program with code 0 and text message
-                JSON.parse(require('fs').readFileSync(__dirname + '/package.json'))
-                    .version);
+            // return message as result of action
+            return JSON.parse(require('fs').readFileSync(__dirname + '/package.json'))
+                .version;
         })
         .end() // end option chain and return to main command
     .cmd().name('subcommand').apply(require('./subcommand').COA).end() // load subcommand from module
@@ -34,7 +34,7 @@ require('coa').Cmd() // main (top level) command declaration
             .req() // make option required
             .end() // end option chain and return to command
         .end() // end subcommand chain and return to parent command
-    .parse(process.argv.slice(2)); // parse and run on process.argv
+    .run(process.argv.slice(2)); // parse and run on process.argv
 ````
 
 ````javascript
@@ -84,6 +84,9 @@ Add (or set) action for current command.<br>
     and has the parameters:<br>
         - *Object* `opts` parsed options<br>
         - *Array* `args` parsed arguments<br>
+        - *Object* `res` actions result accumulator<br>
+    It can return rejected promise by Cmd.reject (in case of error)
+    or any other value treated as result.<br>
 **@param** *{Boolean}* [force=false] flag for set action instead add to existings<br>
 **@returns** *COA.Cmd* `this` instance (for chainability)
 
@@ -97,23 +100,20 @@ Apply function with arguments in context of command instance.<br>
 Make command "helpful", i.e. add -h --help flags for print usage.<br>
 **@returns** *COA.Cmd* `this` instance (for chainability)
 
-#### Cmd.errorExit
-Terminate program with error code 1.
-**@param** *String* `msg` message for print to STDERR<br>
-**@param** *{Object}* [o] optional object for print with message
-
-#### Cmd.exit
-Terminate program with error code 0.<br>
-**@param** *String* `msg` message for print to STDERR
-
 #### Cmd.usage
 Build full usage text for current command instance.<br>
 **@returns** *String* `usage` text
 
-#### Cmd.parse
-Parse arguments from simple format like NodeJS process.argv.<br>
+#### Cmd.run
+Parse arguments from simple format like NodeJS process.argv
+and run ahead current program, i.e. call process.exit when all actions done.
 **@param** *Array* `argv`<br>
 **@returns** *COA.Cmd* `this` instance (for chainability)
+
+#### Cmd.reject
+Return reject of actions results promise.<br>
+Use in .act() for return with error.<br>
+**@returns** *Q.promise* rejected promise
 
 #### Cmd.end
 Finish chain for current subcommand and return parent command instance.<br>
@@ -187,6 +187,9 @@ is present in parsed options (with any value).<br>
     and has the parameters:<br>
         - *Object* `opts` parsed options<br>
         - *Array* `args` parsed arguments<br>
+        - *Object* `res` actions result accumulator<br>
+    It can return rejected promise by Cmd.reject (in case of error)
+    or any other value treated as result.<br>
 **@returns** *COA.Opt* `this` instance (for chainability)
 
 #### Opt.end

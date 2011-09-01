@@ -1,6 +1,7 @@
 sys = require 'sys'
 path = require 'path'
 Color = require('./color').Color
+Q = require('q')
 
 #inspect = require('eyes').inspector { maxLength: 99999, stream: process.stderr }
 
@@ -70,19 +71,19 @@ exports.Cmd = class Cmd
         and has the parameters:
             - {Object} opts parsed options
             - {Array} args parsed arguments
+            - {Object} res actions result accumulator
+        It can return rejected promise by Cmd.reject (in case of error)
+        or any other value treated as result.
     @param {Boolean} [force=false] flag for set action instead add to existings
     @returns {COA.Cmd} this instance (for chainability)
     ###
     act: (act, force) ->
-        return @_act unless act
+        return @ unless act
 
         if not force and @_act
-            oldAct = @_act
-            @_act = ->
-                oldAct.apply @, arguments
-                act.apply @, arguments
+            @_act.push act
         else
-            @_act = act
+            @_act = [act]
 
         @
 
@@ -106,26 +107,14 @@ exports.Cmd = class Cmd
             .name('help').title('Help')
             .short('h').long('help')
             .flag()
-            .act (opts, args) ->
-                @exit @usage()
+            .act ->
+                return @usage()
             .end()
 
-    ###*
-    Terminate program with error code 1.
-    @param {String} msg message for print to STDERR
-    @param {Object} [o] optional object for print with message
-    ###
-    errorExit: (msg, o) ->
-        if msg then sys.error msg + (if o then ': ' + o else '')
-        process.exit 1
 
-    ###*
-    Terminate program with error code 0.
-    @param {String} msg message for print to STDERR
-    ###
-    exit: (msg) ->
+    _exit: (msg, code) ->
         if msg then sys.error msg
-        process.exit()
+        process.exit code or 0
 
     ###*
     Build full usage text for current command instance.
@@ -179,12 +168,7 @@ exports.Cmd = class Cmd
             else
                 opts.splice(pos, 1)[0]
 
-    ###*
-    Parse arguments from simple format like NodeJS process.argv.
-    @param {Array} argv
-    @returns {COA.Cmd} this instance (for chainability)
-    ###
-    parse: (argv) ->
+    _parseArr: (argv) ->
         opts = {}
         args = {}
         nonParsedOpts = @_opts.concat()
@@ -202,16 +186,16 @@ exports.Cmd = class Cmd
                 if opt = @_ejectOpt nonParsedOpts, @_optsByKey[i]
                     opt._parse argv, opts
                 else
-                    @errorExit('Unknown option', i)
+                    return @reject "Unknown option: #{ i }"
 
             # cmd
             else if not nonParsedArgs and /^\w[\w-_]*$/.test i
                 cmd = @_cmdsByName[i]
                 if cmd
-                    cmd.parse(argv)
+                    cmd._parseArr argv
                 else
                     nonParsedArgs = @_args.concat()
-                    argv.unshift(i)
+                    argv.unshift i
 
             # arg
             else
@@ -219,7 +203,7 @@ exports.Cmd = class Cmd
                     if arg._arr then nonParsedArgs.unshift arg
                     arg._parse i, args
                 else
-                    @errorExit 'Unknown argument', i
+                    return @reject "Unknown argument: #{ i }"
 
         nonParsedArgs or= @_args.concat()
 
@@ -227,14 +211,54 @@ exports.Cmd = class Cmd
             nonParsed = nonParsedOpts.concat nonParsedArgs
             while i = nonParsed.shift()
                 if i._req and i._checkParsed opts, args
-                    @errorExit i._requiredText()
+                    return @reject i._requiredText()
                 if '_def' of i
                     i._saveVal opts, i._def
 
-        #console.log opts, args
-        @_act? opts, args
-        #@exit()
+        { opts: opts, args: args }
+
+    _do: (input, succ, err) ->
+        defer = Q.defer()
+        @_act?.reduce(
+            (res, act) =>
+                res.then (params) =>
+                    actRes = act.call(@
+                        params.opts
+                        params.args
+                        params.res)
+
+                    if Q.isPromise actRes
+                        actRes
+                    else
+                        params.res ?= actRes
+                        params
+            defer.promise
+        )
+        .fail((res) => err.call @, res)
+        .then((res) => succ.call @, res.res)
+
+        defer.resolve @_parseArr input
+
+    ###*
+    Parse arguments from simple format like NodeJS process.argv
+    and run ahead current program, i.e. call process.exit when all actions done.
+    @param {Array} argv
+    @returns {COA.Cmd} this instance (for chainability)
+    ###
+    run: (argv = process.argv) ->
+        @_do(
+            argv
+            (res) -> @_exit res.toString(), 0
+            (res) -> @_exit res.toString(), 1
+        )
         @
+
+    ###*
+    Return reject of actions results promise.
+    Use in .act() for return with error.
+    @returns {Q.promise} rejected promise
+    ###
+    reject: (reason) -> Q.reject(reason)
 
     ###*
     Finish chain for current subcommand and return parent command instance.

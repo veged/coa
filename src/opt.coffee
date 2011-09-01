@@ -113,13 +113,16 @@ exports.Opt = class Opt
         and has the parameters:
             - {Object} opts parsed options
             - {Array} args parsed arguments
+            - {Object} res actions result accumulator
+        It can return rejected promise by Cmd.reject (in case of error)
+        or any other value treated as result.
     @returns {COA.Opt} this instance (for chainability)
     ###
     act: (act) ->
         name = @_name
         @_cmd.act (opts) ->
             if name of opts
-                act.apply @, arguments
+                return act.apply @, arguments
         @
 
     _saveVal: (opts, val) ->

@@ -10,4 +10,4 @@ require('../lib/coa').Cmd()
             console.log(opts.bla);
         })
         .end()
-    .parse(['--bla=blabla']);
+    .run(['--bla=blabla']);
