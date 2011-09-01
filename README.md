@@ -66,8 +66,9 @@ Set a long description for command to be used anywhere in text messages.<br>
 **@returns** *COA.Cmd* `this` instance (for chainability)
 
 #### Cmd.cmd
-Create new subcommand for current command.<br>
-**@returns** *COA.Cmd* `new` subcommand instance
+Create new or add existing subcommand for current command.<br>
+**@param** *COA.Cmd* `[cmd]` existing command instance<br>
+**@returns** *COA.Cmd* new or added subcommand instance
 
 #### Cmd.opt
 Create option for current command.<br>

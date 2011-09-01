@@ -21,8 +21,7 @@ exports.Cmd = class Cmd
         if this not instanceof Cmd
             return new Cmd cmd
 
-        if cmd then cmd._cmds.push @
-        @_cmd = cmd or this
+        @_parent cmd
 
         @_cmds = []
         @_cmdsByName = {}
@@ -31,6 +30,11 @@ exports.Cmd = class Cmd
         @_optsByKey = {}
 
         @_args = []
+
+    _parent: (cmd) ->
+        if cmd then cmd._cmds.push @
+        @_cmd = cmd or this
+        @
 
     ###*
     Set a canonical command identifier to be used anywhere in the API.
@@ -47,10 +51,13 @@ exports.Cmd = class Cmd
     title: (@_title) -> @
 
     ###*
-    Create new subcommand for current command.
+    Create new or add existing subcommand for current command.
+    @param {COA.Cmd} [cmd] existing command instance
     @returns {COA.Cmd} new subcommand instance
     ###
-    cmd: -> new Cmd @
+    cmd: (cmd) ->
+        if cmd then cmd._parent @
+        else new Cmd @
 
     ###*
     Create option for current command.
