@@ -16,7 +16,7 @@ require('coa').Cmd() // main (top level) command declaration
         .title('Version') // title for use in text messages
         .short('v') // short key: -v
         .long('version') // long key: --version
-        .type(Boolean) // type Boolean for options without value
+        .flag() // for options without value
         .act(function(opts) { // add action for option
             this.exit( // exit program with code 0 and text message
                 JSON.parse(require('fs').readFileSync(__dirname + '/package.json'))
