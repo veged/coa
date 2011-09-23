@@ -176,6 +176,7 @@ exports.Cmd = class Cmd
                 opts.splice(pos, 1)[0]
 
     _parseArr: (argv) ->
+        cmd = @
         opts = {}
         args = {}
         nonParsedOpts = @_opts.concat()
@@ -197,9 +198,9 @@ exports.Cmd = class Cmd
 
             # cmd
             else if not nonParsedArgs and /^\w[\w-_]*$/.test i
-                cmd = @_cmdsByName[i]
-                if cmd
-                    cmd._parseArr argv
+                tryCmd = @_cmdsByName[i]
+                if tryCmd
+                    { cmd, opts, args } = tryCmd._parseArr argv
                 else
                     nonParsedArgs = @_args.concat()
                     argv.unshift i
@@ -222,11 +223,12 @@ exports.Cmd = class Cmd
                 if '_def' of i
                     i._saveVal opts, i._def
 
-        { opts: opts, args: args }
+        { cmd: cmd, opts: opts, args: args }
 
     _do: (input, succ, err) ->
+        params = @_parseArr input
         defer = Q.defer()
-        @_act?.reduce(
+        params.cmd._act?.reduce(
             (res, act) =>
                 res.then (params) =>
                     actRes = act.call(@
@@ -244,7 +246,7 @@ exports.Cmd = class Cmd
         .fail((res) => err.call @, res)
         .then((res) => succ.call @, res.res)
 
-        defer.resolve @_parseArr input
+        defer.resolve params
 
     ###*
     Parse arguments from simple format like NodeJS process.argv
