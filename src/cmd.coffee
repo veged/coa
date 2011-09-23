@@ -115,7 +115,7 @@ exports.Cmd = class Cmd
             .short('h').long('help')
             .flag()
             .act ->
-                return @usage()
+                return @resolve @usage()
             .end()
 
 
@@ -256,16 +256,23 @@ exports.Cmd = class Cmd
         @_do(
             argv
             (res) -> @_exit res.toString(), 0
-            (res) -> @_exit res.toString(), 1
+            (res) -> @_exit res.reason.toString(), res.code
         )
         @
 
     ###*
-    Return reject of actions results promise.
+    Return reject of actions results promise with error code.
     Use in .act() for return with error.
     @returns {Q.promise} rejected promise
     ###
-    reject: (reason) -> Q.reject(reason)
+    reject: (reason, code = 1) -> Q.reject({ reason: reason, code: code })
+
+    ###*
+    Return resolved results promise (rejected in fact, but without error code).
+    Use in .act() to stop chain of actions and return without error.
+    @returns {Q.promise} rejected promise
+    ###
+    resolve: (value) -> @reject(value, 0)
 
     ###*
     Finish chain for current subcommand and return parent command instance.
