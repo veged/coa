@@ -1,3 +1,4 @@
+var argv = process.argv.slice(2);
 require('../lib/coa').Cmd()
     .name('val')
     .title('Val test')
@@ -10,4 +11,4 @@ require('../lib/coa').Cmd()
             console.log(opts.bla);
         })
         .end()
-    .run(['--bla=blabla']);
+    .run(argv.length? argv : ['--bla=blabla']);

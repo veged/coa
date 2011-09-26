@@ -109,11 +109,11 @@ exports.Cmd = class Cmd
     @returns {COA.Cmd} this instance (for chainability)
     ###
     helpful: ->
-        @_helpful = true
         @opt()
             .name('help').title('Help')
             .short('h').long('help')
             .flag()
+            .only()
             .act ->
                 return @usage()
             .end()
@@ -175,9 +175,7 @@ exports.Cmd = class Cmd
             else
                 opts.splice(pos, 1)[0]
 
-    _parseArr: (argv) ->
-        opts = {}
-        args = {}
+    _parseArr: (argv, opts = {}, args = {}) ->
         nonParsedOpts = @_opts.concat()
 
         while i = argv.shift()
@@ -199,7 +197,7 @@ exports.Cmd = class Cmd
             else if not nonParsedArgs and /^\w[\w-_]*$/.test i
                 cmd = @_cmdsByName[i]
                 if cmd
-                    cmd._parseArr argv
+                    return cmd._parseArr argv, opts, args
                 else
                     nonParsedArgs = @_args.concat()
                     argv.unshift i
@@ -214,7 +212,12 @@ exports.Cmd = class Cmd
 
         nonParsedArgs or= @_args.concat()
 
-        if not (this._helpful and opts.help)
+        hitOnly = false
+        for opt in @_opts
+            if opt._only and opt._name of opts
+                hitOnly = true
+
+        if not hitOnly
             nonParsed = nonParsedOpts.concat nonParsedArgs
             while i = nonParsed.shift()
                 if i._req and i._checkParsed opts, args
@@ -222,14 +225,17 @@ exports.Cmd = class Cmd
                 if '_def' of i
                     i._saveVal opts, i._def
 
-        { opts: opts, args: args }
+        { cmd: @, opts: opts, args: args }
 
     _do: (input, succ, err) ->
         defer = Q.defer()
-        @_act?.reduce(
+        parsed = @_parseArr input
+        cmd = parsed.cmd or @
+        cmd._act?.reduce(
             (res, act) =>
                 res.then (params) =>
-                    actRes = act.call(@
+                    actRes = act.call(
+                        cmd
                         params.opts
                         params.args
                         params.res)
@@ -241,10 +247,10 @@ exports.Cmd = class Cmd
                         params
             defer.promise
         )
-        .fail((res) => err.call @, res)
-        .then((res) => succ.call @, res.res)
+        .fail((res) => err.call cmd, res)
+        .then((res) => succ.call cmd, res.res)
 
-        defer.resolve @_parseArr input
+        defer.resolve parsed
 
     ###*
     Parse arguments from simple format like NodeJS process.argv
@@ -252,20 +258,22 @@ exports.Cmd = class Cmd
     @param {Array} argv
     @returns {COA.Cmd} this instance (for chainability)
     ###
-    run: (argv = process.argv) ->
+    run: (argv = process.argv.slice(2)) ->
         @_do(
             argv
             (res) -> @_exit res.toString(), 0
-            (res) -> @_exit res.toString(), 1
+            (res) -> @_exit res.reason.toString(), res.code
         )
         @
 
     ###*
-    Return reject of actions results promise.
+    Return reject of actions results promise with error code.
     Use in .act() for return with error.
+    @param {Object} reject reason
+    @param {Integer} error code
     @returns {Q.promise} rejected promise
     ###
-    reject: (reason) -> Q.reject(reason)
+    reject: (reason, code = 1) -> Q.reject({ reason: reason, code: code })
 
     ###*
     Finish chain for current subcommand and return parent command instance.

@@ -70,6 +70,14 @@ exports.Opt = class Opt
         @
 
     ###*
+    Makes an option to act as a command.
+    @returns {COA.Opt} this instance (for chainability)
+    ###
+    only: ->
+        @_only = true
+        @
+
+    ###*
     Set a validation (or value) function for option.
     Value from command line passes through before becoming available from API.
     Using for validation and convertion simple types to any values.
@@ -119,10 +127,12 @@ exports.Opt = class Opt
     @returns {COA.Opt} this instance (for chainability)
     ###
     act: (act) ->
+        opt = @
         name = @_name
         @_cmd.act (opts) ->
             if name of opts
-                return act.apply @, arguments
+                res = act.apply @, arguments
+                return if opt._only then @reject(res, 0) else res
         @
 
     _saveVal: (opts, val) ->
