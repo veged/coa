@@ -261,8 +261,8 @@ exports.Cmd = class Cmd
     run: (argv = process.argv.slice(2)) ->
         @_do(
             argv
-            (res) -> @_exit res.toString(), 0
-            (res) -> @_exit res.reason.toString(), res.code
+            (res) -> @_exit res.toString(), res.exitCode ? 0
+            (res) -> @_exit res.toString(), res.exitCode ? 1
         )
         @
 
@@ -273,7 +273,7 @@ exports.Cmd = class Cmd
     @param {Integer} error code
     @returns {Q.promise} rejected promise
     ###
-    reject: (reason, code = 1) -> Q.reject({ reason: reason, code: code })
+    reject: (reason) -> Q.reject(reason)
 
     ###*
     Finish chain for current subcommand and return parent command instance.

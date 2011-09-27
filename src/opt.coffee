@@ -132,7 +132,13 @@ exports.Opt = class Opt
         @_cmd.act (opts) ->
             if name of opts
                 res = act.apply @, arguments
-                return if opt._only then @reject(res, 0) else res
+                if opt._only
+                    @reject {
+                        toString: -> res
+                        exitCode: 0
+                    }
+                else
+                    res
         @
 
     _saveVal: (opts, val) ->
