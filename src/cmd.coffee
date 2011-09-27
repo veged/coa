@@ -270,7 +270,8 @@ exports.Cmd = class Cmd
     Return reject of actions results promise with error code.
     Use in .act() for return with error.
     @param {Object} reject reason
-    @param {Integer} error code
+        You can customize toString() method and exitCode property
+        of reason object.
     @returns {Q.promise} rejected promise
     ###
     reject: (reason) -> Q.reject(reason)

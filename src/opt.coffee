@@ -70,7 +70,8 @@ exports.Opt = class Opt
         @
 
     ###*
-    Makes an option to act as a command.
+    Makes an option to act as a command,
+    i.e. program will exit just after option action.
     @returns {COA.Opt} this instance (for chainability)
     ###
     only: ->

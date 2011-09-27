@@ -114,6 +114,9 @@ and run ahead current program, i.e. call process.exit when all actions done.
 #### Cmd.reject
 Return reject of actions results promise.<br>
 Use in .act() for return with error.<br>
+**@param** *Object* `reason` reject reason<br>
+    You can customize toString() method and exitCode property
+    of reason object.<br>
 **@returns** *Q.promise* rejected promise
 
 #### Cmd.end
@@ -157,6 +160,11 @@ Otherwise, the value will be used by the latter passed.<br>
 
 #### Opt.req
 Makes an option req.<br>
+**@returns** *COA.Opt* `this` instance (for chainability)
+
+#### Opt.only
+Makes an option to act as a command,
+i.e. program will exit just after option action.<br>
 **@returns** *COA.Opt* `this` instance (for chainability)
 
 #### Opt.val
