@@ -1,3 +1,4 @@
+var argv = process.argv.slice(2);
 require('../lib/coa').Cmd()
     .name('arr')
     .title('Array value test')
@@ -10,4 +11,4 @@ require('../lib/coa').Cmd()
             console.log(opts.arr);
         })
         .end()
-    .run(['-a', '1', '-a', '2']);
+    .run(argv.length? argv : ['-a', '1', '-a', '2']);
