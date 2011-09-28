@@ -259,11 +259,8 @@ exports.Cmd = class Cmd
     @returns {COA.Cmd} this instance (for chainability)
     ###
     run: (argv = process.argv.slice(2)) ->
-        @_do(
-            argv
-            (res) -> @_exit res.toString(), res.exitCode ? 0
-            (res) -> @_exit res.toString(), res.exitCode ? 1
-        )
+        cb = (code) -> (res) -> @_exit res.toString(), res.exitCode ? code
+        @_do argv, cb(0), cb(1)
         @
 
     ###*
