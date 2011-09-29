@@ -63,6 +63,13 @@ exports.Arg = class Arg
     def: Opt::def
 
     ###*
+    Make argument value inputting stream.
+    It's add useful validation and shortcut for STDIN.
+    @returns {COA.Arg} this instance (for chainability)
+    ###
+    input: Opt::input
+
+    ###*
     Make argument value outputing stream.
     It's add useful validation and shortcut for STDOUT.
     @returns {COA.Arg} this instance (for chainability)

@@ -98,6 +98,24 @@ exports.Opt = class Opt
     def: (@_def) -> @
 
     ###*
+    Make option value inputting stream.
+    It's add useful validation and shortcut for STDIN.
+    @returns {COA.Opt} this instance (for chainability)
+    ###
+    input: ->
+        @
+            .def(process.stdin)
+            .val (v) ->
+                if typeof v is 'string'
+                    if v is '-'
+                        process.stdin
+                    else
+                        s = fs.createReadStream v, { encoding: 'utf8' }
+                        s.pause()
+                        s
+                else v
+
+    ###*
     Make option value outputing stream.
     It's add useful validation and shortcut for STDOUT.
     @returns {COA.Opt} this instance (for chainability)
