@@ -81,6 +81,16 @@ exports.Arg = class Arg
     _requiredText: -> 'Missing required argument:\n  ' + @_usage()
 
     ###*
+    Return rejected promise with error code.
+    Use in .val() for return with error.
+    @param {Object} reject reason
+        You can customize toString() method and exitCode property
+        of reason object.
+    @returns {Q.promise} rejected promise
+    ###
+    reject: Cmd::reject
+
+    ###*
     Finish chain for current option and return parent command instance.
     @returns {COA.Cmd} parent command
     ###
