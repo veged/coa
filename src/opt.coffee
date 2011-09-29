@@ -98,6 +98,24 @@ exports.Opt = class Opt
     def: (@_def) -> @
 
     ###*
+    Make option value inputting stream.
+    It's add useful validation and shortcut for STDIN.
+    @returns {COA.Opt} this instance (for chainability)
+    ###
+    input: ->
+        @
+            .def(process.stdin)
+            .val (v) ->
+                if typeof v is 'string'
+                    if v is '-'
+                        process.stdin
+                    else
+                        s = fs.createReadStream v, { encoding: 'utf8' }
+                        s.pause()
+                        s
+                else v
+
+    ###*
     Make option value outputing stream.
     It's add useful validation and shortcut for STDOUT.
     @returns {COA.Opt} this instance (for chainability)
@@ -148,7 +166,7 @@ exports.Opt = class Opt
             (opts[@_name] or= []).push val
         else
             opts[@_name] = val
-        @
+        val
 
     _parse: (argv, opts) ->
         @_saveVal(
@@ -179,6 +197,16 @@ exports.Opt = class Opt
         res.join ''
 
     _requiredText: -> 'Missing required option:\n  ' + @_usage()
+
+    ###*
+    Return rejected promise with error code.
+    Use in .val() for return with error.
+    @param {Object} reject reason
+        You can customize toString() method and exitCode property
+        of reason object.
+    @returns {Q.promise} rejected promise
+    ###
+    reject: Cmd::reject
 
     ###*
     Finish chain for current option and return parent command instance.
