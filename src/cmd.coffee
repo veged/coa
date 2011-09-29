@@ -189,7 +189,8 @@ exports.Cmd = class Cmd
                     argv.unshift m[2]
 
                 if opt = @_ejectOpt nonParsedOpts, @_optsByKey[i]
-                    opt._parse argv, opts
+                    if Q.isPromise res = opt._parse argv, opts
+                        return res
                 else
                     return @reject "Unknown option: #{ i }"
 
@@ -206,7 +207,8 @@ exports.Cmd = class Cmd
             else
                 if arg = (nonParsedArgs or= @_args.concat()).shift()
                     if arg._arr then nonParsedArgs.unshift arg
-                    arg._parse i, args
+                    if Q.isPromise res = arg._parse i, args
+                        return res
                 else
                     return @reject "Unknown argument: #{ i }"
 
@@ -259,11 +261,8 @@ exports.Cmd = class Cmd
     @returns {COA.Cmd} this instance (for chainability)
     ###
     run: (argv = process.argv.slice(2)) ->
-        @_do(
-            argv
-            (res) -> @_exit res.toString(), res.exitCode ? 0
-            (res) -> @_exit res.toString(), res.exitCode ? 1
-        )
+        cb = (code) -> (res) -> @_exit res.toString(), res.exitCode ? code
+        @_do argv, cb(0), cb(1)
         @
 
     ###*

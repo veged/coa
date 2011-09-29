@@ -63,6 +63,13 @@ exports.Arg = class Arg
     def: Opt::def
 
     ###*
+    Make argument value inputting stream.
+    It's add useful validation and shortcut for STDIN.
+    @returns {COA.Arg} this instance (for chainability)
+    ###
+    input: Opt::input
+
+    ###*
     Make argument value outputing stream.
     It's add useful validation and shortcut for STDOUT.
     @returns {COA.Arg} this instance (for chainability)
@@ -79,6 +86,16 @@ exports.Arg = class Arg
     _usage: -> Color('lpurple', @_name.toUpperCase()) + ' : ' + @_title
 
     _requiredText: -> 'Missing required argument:\n  ' + @_usage()
+
+    ###*
+    Return rejected promise with error code.
+    Use in .val() for return with error.
+    @param {Object} reject reason
+        You can customize toString() method and exitCode property
+        of reason object.
+    @returns {Q.promise} rejected promise
+    ###
+    reject: Cmd::reject
 
     ###*
     Finish chain for current option and return parent command instance.
