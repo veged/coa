@@ -3,7 +3,8 @@ Color = require('./color').Color
 Cmd = require('./cmd').Cmd
 
 ###*
-## Option
+Option
+
 Named entity. Options may have short and long keys for use from command line.
 @namespace
 @class Presents option

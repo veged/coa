@@ -6,7 +6,8 @@ Q = require('q')
 #inspect = require('eyes').inspector { maxLength: 99999, stream: process.stderr }
 
 ###*
-## Command
+Command
+
 Top level entity. Commands may have options and arguments.
 @namespace
 @class Presents command

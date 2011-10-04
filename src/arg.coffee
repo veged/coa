@@ -3,7 +3,8 @@ Cmd = require('./cmd').Cmd
 Opt = require('./opt').Opt
 
 ###*
-## Argument
+Argument
+
 Unnamed entity. From command line arguments passed as list of unnamed values.
 @namespace
 @class Presents argument
