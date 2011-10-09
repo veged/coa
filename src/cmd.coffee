@@ -132,6 +132,12 @@ exports.Cmd = class Cmd
                 return @usage()
             .end()
 
+    ###*
+    Adds shell completion to command, adds "completion" subcommand,
+    that makes all the magic.
+    Must be called only on root command.
+    @returns {COA.Cmd} this instance (for chainability)
+    ###
     completable: ->
         @cmd()
             .name('completion')
