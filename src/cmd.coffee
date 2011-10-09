@@ -42,7 +42,9 @@ exports.Cmd = class Cmd
     @param {String} _name command name
     @returns {COA.Cmd} this instance (for chainability)
     ###
-    name: (@_name) -> @_cmd._cmdsByName[_name] = @
+    name: (@_name) ->
+        if @_cmd isnt @ then @_cmd._cmdsByName[_name] = @
+        @
 
     ###*
     Set a long description for command to be used anywhere in text messages.
@@ -96,6 +98,17 @@ exports.Cmd = class Cmd
         @
 
     ###*
+    Set custom additional completion for current command.
+    @param {Function} completion generation function,
+        invoked in the context of command instance.
+        Accepts parameters:
+            - {Object} opts completion options
+        It can return promise or any other value treated as result.
+    @returns {COA.Cmd} this instance (for chainability)
+    ###
+    comp: (@_comp) -> @
+
+    ###*
     Apply function with arguments in context of command instance.
     @param {Function} fn
     @param {Array} args
@@ -119,6 +132,11 @@ exports.Cmd = class Cmd
                 return @usage()
             .end()
 
+    completable: ->
+        @cmd()
+            .name('completion')
+            .apply(require './completion')
+            .end()
 
     _exit: (msg, code) ->
         if msg then sys.error msg

@@ -64,6 +64,17 @@ exports.Arg = class Arg
     def: Opt::def
 
     ###*
+    Set custom additional completion for current argument.
+    @param {Function} completion generation function,
+        invoked in the context of argument instance.
+        Accepts parameters:
+            - {Object} opts completion options
+        It can return promise or any other value treated as result.
+    @returns {COA.Arg} this instance (for chainability)
+    ###
+    comp: Cmd::comp
+
+    ###*
     Make argument value inputting stream.
     It's add useful validation and shortcut for STDIN.
     @returns {COA.Arg} this instance (for chainability)

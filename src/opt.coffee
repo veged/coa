@@ -161,6 +161,17 @@ exports.Opt = class Opt
                     res
         @
 
+    ###*
+    Set custom additional completion for current option.
+    @param {Function} completion generation function,
+        invoked in the context of option instance.
+        Accepts parameters:
+            - {Object} opts completion options
+        It can return promise or any other value treated as result.
+    @returns {COA.Opt} this instance (for chainability)
+    ###
+    comp: Cmd::comp
+
     _saveVal: (opts, val) ->
         if @_val then val = @_val val
         if @_arr
