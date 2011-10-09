@@ -176,14 +176,40 @@ exports.Cmd = class Cmd
             else
                 opts.splice(pos, 1)[0]
 
-    _parseArr: (argv, opts = {}, args = {}) ->
+    _checkRequired: (opts, args) ->
+        if not (@_opts.filter (o) -> o._only and o._name of opts).length
+            all = @_opts.concat @_args
+            while i = all.shift()
+                if i._req and i._checkParsed opts, args
+                    return @reject i._requiredText()
+
+    _parseCmd: (argv, unparsed = []) ->
+        argv = argv.concat()
+        optSeen = false
+        while i = argv.shift()
+            if not i.indexOf '-'
+                optSeen = true
+            if not optSeen and /^\w[\w-_]*$/.test(i) and cmd = @_cmdsByName[i]
+                return cmd._parseCmd argv, unparsed
+
+            unparsed.push i
+
+        { cmd: @, argv: unparsed }
+
+    _parseOptsAndArgs: (argv) ->
+        opts = {}
+        args = {}
+
         nonParsedOpts = @_opts.concat()
+        nonParsedArgs = @_args.concat()
 
         while i = argv.shift()
-            # opt
-            if not i.indexOf '-'
+            # raw args
+            if i is '--'
+                args.raw = argv.splice(0)
 
-                nonParsedArgs or= @_args.concat()
+            # opt
+            else if not i.indexOf '-'
 
                 if m = i.match /^(--\w[\w-_]*)=(.*)$/
                     i = m[1]
@@ -195,46 +221,33 @@ exports.Cmd = class Cmd
                 else
                     return @reject "Unknown option: #{ i }"
 
-            # cmd
-            else if not nonParsedArgs and /^\w[\w-_]*$/.test i
-                cmd = @_cmdsByName[i]
-                if cmd
-                    return cmd._parseArr argv, opts, args
-                else
-                    nonParsedArgs = @_args.concat()
-                    argv.unshift i
-
             # arg
             else
-                if arg = (nonParsedArgs or= @_args.concat()).shift()
+                if arg = nonParsedArgs.shift()
                     if arg._arr then nonParsedArgs.unshift arg
                     if Q.isPromise res = arg._parse i, args
                         return res
                 else
                     return @reject "Unknown argument: #{ i }"
 
-        nonParsedArgs or= @_args.concat()
-
-        hitOnly = false
-        for opt in @_opts
-            if opt._only and opt._name of opts
-                hitOnly = true
-
-        if not hitOnly
+            # defaults
             nonParsed = nonParsedOpts.concat nonParsedArgs
             while i = nonParsed.shift()
-                if i._req and i._checkParsed opts, args
-                    return @reject i._requiredText()
-                if '_def' of i
-                    i._saveVal opts, i._def
+                if '_def' of i then i._saveVal opts, i._def
 
-        { cmd: @, opts: opts, args: args }
+        { opts: opts, args: args }
+
+    _parseArr: (argv) ->
+        { cmd, argv } = @_parseCmd argv
+        if Q.isPromise res = cmd._parseOptsAndArgs argv
+            return res
+        { cmd: cmd, opts: res.opts, args: res.args }
 
     _do: (input, succ, err) ->
         defer = Q.defer()
         parsed = @_parseArr input
         cmd = parsed.cmd or @
-        cmd._act?.reduce(
+        [@_checkRequired].concat(cmd._act or []).reduce(
             (res, act) =>
                 res.then (res) =>
                     act.call(
