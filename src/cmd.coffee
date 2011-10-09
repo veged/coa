@@ -236,24 +236,18 @@ exports.Cmd = class Cmd
         cmd = parsed.cmd or @
         cmd._act?.reduce(
             (res, act) =>
-                res.then (params) =>
-                    actRes = act.call(
+                res.then (res) =>
+                    act.call(
                         cmd
-                        params.opts
-                        params.args
-                        params.res)
-
-                    if Q.isPromise actRes
-                        actRes
-                    else
-                        params.res ?= actRes
-                        params
+                        parsed.opts
+                        parsed.args
+                        res)
             defer.promise
         )
         .fail((res) => err.call cmd, res)
-        .then((res) => succ.call cmd, res.res)
+        .then((res) => succ.call cmd, res)
 
-        defer.resolve parsed
+        defer.resolve(if Q.isPromise parsed then parsed)
 
     ###*
     Parse arguments from simple format like NodeJS process.argv
@@ -262,7 +256,7 @@ exports.Cmd = class Cmd
     @returns {COA.Cmd} this instance (for chainability)
     ###
     run: (argv = process.argv.slice(2)) ->
-        cb = (code) -> (res) -> @_exit res.toString(), res.exitCode ? code
+        cb = (code) -> (res) -> @_exit res.stack ? res.toString(), res.exitCode ? code
         @_do argv, cb(0), cb(1)
         @
 
