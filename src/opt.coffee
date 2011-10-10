@@ -1,4 +1,5 @@
 fs = require 'fs'
+Q = require 'q'
 Color = require('./color').Color
 Cmd = require('./cmd').Cmd
 
@@ -153,10 +154,11 @@ exports.Opt = class Opt
             if name of opts
                 res = act.apply @, arguments
                 if opt._only
-                    @reject {
-                        toString: -> res
-                        exitCode: 0
-                    }
+                    Q.when res, (res) =>
+                        @reject {
+                            toString: -> res.toString()
+                            exitCode: 0
+                        }
                 else
                     res
         @
