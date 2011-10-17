@@ -254,10 +254,10 @@ exports.Cmd = class Cmd
                 else
                     return @reject "Unknown argument: #{ i }"
 
-            # defaults
-            nonParsed = nonParsedOpts.concat nonParsedArgs
-            while i = nonParsed.shift()
-                if '_def' of i then i._saveVal opts, i._def
+        # defaults
+        nonParsed = nonParsedOpts.concat nonParsedArgs
+        while i = nonParsed.shift()
+            if '_def' of i then i._saveVal opts, i._def
 
         { opts: opts, args: args }
 
