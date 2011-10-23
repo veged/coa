@@ -135,7 +135,7 @@ complete = (cmd, opts) ->
 
     # custom completion on cmds
     if cmd._comp
-        compls = Q.join compls, Q.when cmd._comp(opts), (c, o) ->
+        compls = Q.join compls, Q.when(cmd._comp(opts)), (c, o) ->
             c.concat o
 
     # TODO: context aware custom completion on cmds, opts and args
