@@ -228,12 +228,8 @@ exports.Cmd = class Cmd
         nonParsedArgs = @_args.concat()
 
         while i = argv.shift()
-            # raw args
-            if i is '--'
-                args.raw = argv.splice(0)
-
             # opt
-            else if not i.indexOf '-'
+            if not i.indexOf '-' and i isnt '--'
 
                 if m = i.match /^(--\w[\w-_]*)=(.*)$/
                     i = m[1]
@@ -247,12 +243,18 @@ exports.Cmd = class Cmd
 
             # arg
             else
-                if arg = nonParsedArgs.shift()
-                    if arg._arr then nonParsedArgs.unshift arg
-                    if Q.isPromise res = arg._parse i, args
-                        return res
-                else
-                    return @reject "Unknown argument: #{ i }"
+                if i is '--'
+                    i = argv.splice(0)
+
+                i = if Array.isArray(i) then i else [i]
+
+                while a = i.shift()
+                    if arg = nonParsedArgs.shift()
+                        if arg._arr then nonParsedArgs.unshift arg
+                        if Q.isPromise res = arg._parse a, args
+                            return res
+                    else
+                        return @reject "Unknown argument: #{ a }"
 
         # defaults
         nonParsed = nonParsedOpts.concat nonParsedArgs
