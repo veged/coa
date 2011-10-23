@@ -4,10 +4,17 @@ See https://github.com/isaacs/npm/blob/master/lib/completion.js
 ###
 
 Q = require 'q'
+escape = require('./shell').escape
+unescape = require('./shell').unescape
 
 module.exports = ->
     @title('Shell completion')
         .helpful()
+        .arg()
+            .name('raw')
+            .title('Completion words')
+            .arr()
+            .end()
         .act (opts, args) ->
             if process.platform == 'win32'
                 e = new Error 'shell completion not supported on windows'
@@ -22,6 +29,7 @@ module.exports = ->
             console.error 'COMP_LINE:  %s', process.env.COMP_LINE
             console.error 'COMP_CWORD: %s', process.env.COMP_CWORD
             console.error 'COMP_POINT: %s', process.env.COMP_POINT
+            console.error 'args: %j', args.raw
 
             # completion opts
             opts = getOpts args.raw
@@ -29,7 +37,8 @@ module.exports = ->
             # cmd
             { cmd, argv } = @_cmd._parseCmd opts.partialWords
             Q.when complete(cmd, opts), (compls) ->
-                console.log compls.join('\n')
+                console.error 'filtered: %j', compls
+                console.log compls.map(escape).join('\n')
 
 
 dumpScript = (name) ->
@@ -142,16 +151,6 @@ complete = (cmd, opts) ->
     # (can depend on already entered values, especially options)
 
     Q.when compls, (compls) ->
-        console.error '%j', compls
+        console.error 'partialWord: %s', opts.partialWord
+        console.error 'compls: %j', compls
         compls.filter (c) -> c.indexOf(opts.partialWord) is 0
-
-
-unescape = (w) ->
-    if w.charAt(0) is '"'
-        w.replace(/^"|"$/g, '')
-    else
-        w.replace(/\\ /g, ' ')
-
-
-escape = (w) ->
-    if w.match(/\s+/) then '"' + w + '"' else w
