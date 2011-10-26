@@ -3,6 +3,10 @@ require('../lib/coa').Cmd()
     .name('arg')
     .title('Args test')
     .helpful()
+    .opt()
+        .name('opt').title('Option')
+        .long('opt').short('o')
+        .end()
     .arg()
         .name('arg1').title('First arg')
         .end()
@@ -11,6 +15,7 @@ require('../lib/coa').Cmd()
         .arr()
         .end()
     .act(function(opts, args) {
+        console.log(opts);
         console.log(args);
     })
-    .run(argv.length? argv : ['value', 'value 1', 'value 2']);
+    .run(argv.length? argv : ['-o', 'value', 'value', 'value 1', 'value 2']);

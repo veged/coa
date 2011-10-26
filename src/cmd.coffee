@@ -229,7 +229,7 @@ exports.Cmd = class Cmd
 
         while i = argv.shift()
             # opt
-            if not i.indexOf '-' and i isnt '--'
+            if i isnt '--' and not i.indexOf '-'
 
                 if m = i.match /^(--\w[\w-_]*)=(.*)$/
                     i = m[1]
