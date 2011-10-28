@@ -19,6 +19,9 @@
     "dependencies" : {
         "q": ">=0.7.1"
     },
+    "devDependencies" : {
+        "vows": ">=0.5.12"
+    },
     "engines" : [ "node ~0.4.0" ],
     "licenses" : [ { "type" : "AS IS" } ]
 }

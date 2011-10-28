@@ -1,9 +1,11 @@
 fs = require 'fs'
+Q = require 'q'
 Color = require('./color').Color
 Cmd = require('./cmd').Cmd
 
 ###*
-## Option
+Option
+
 Named entity. Options may have short and long keys for use from command line.
 @namespace
 @class Presents option
@@ -152,13 +154,25 @@ exports.Opt = class Opt
             if name of opts
                 res = act.apply @, arguments
                 if opt._only
-                    @reject {
-                        toString: -> res
-                        exitCode: 0
-                    }
+                    Q.when res, (res) =>
+                        @reject {
+                            toString: -> res.toString()
+                            exitCode: 0
+                        }
                 else
                     res
         @
+
+    ###*
+    Set custom additional completion for current option.
+    @param {Function} completion generation function,
+        invoked in the context of option instance.
+        Accepts parameters:
+            - {Object} opts completion options
+        It can return promise or any other value treated as result.
+    @returns {COA.Opt} this instance (for chainability)
+    ###
+    comp: Cmd::comp
 
     _saveVal: (opts, val) ->
         if @_val then val = @_val val

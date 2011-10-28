@@ -6,7 +6,8 @@ Q = require('q')
 #inspect = require('eyes').inspector { maxLength: 99999, stream: process.stderr }
 
 ###*
-## Command
+Command
+
 Top level entity. Commands may have options and arguments.
 @namespace
 @class Presents command
@@ -41,7 +42,9 @@ exports.Cmd = class Cmd
     @param {String} _name command name
     @returns {COA.Cmd} this instance (for chainability)
     ###
-    name: (@_name) -> @_cmd._cmdsByName[_name] = @
+    name: (@_name) ->
+        if @_cmd isnt @ then @_cmd._cmdsByName[_name] = @
+        @
 
     ###*
     Set a long description for command to be used anywhere in text messages.
@@ -95,6 +98,17 @@ exports.Cmd = class Cmd
         @
 
     ###*
+    Set custom additional completion for current command.
+    @param {Function} completion generation function,
+        invoked in the context of command instance.
+        Accepts parameters:
+            - {Object} opts completion options
+        It can return promise or any other value treated as result.
+    @returns {COA.Cmd} this instance (for chainability)
+    ###
+    comp: (@_comp) -> @
+
+    ###*
     Apply function with arguments in context of command instance.
     @param {Function} fn
     @param {Array} args
@@ -118,6 +132,17 @@ exports.Cmd = class Cmd
                 return @usage()
             .end()
 
+    ###*
+    Adds shell completion to command, adds "completion" subcommand,
+    that makes all the magic.
+    Must be called only on root command.
+    @returns {COA.Cmd} this instance (for chainability)
+    ###
+    completable: ->
+        @cmd()
+            .name('completion')
+            .apply(require './completion')
+            .end()
 
     _exit: (msg, code) ->
         if msg then sys.error msg
@@ -175,14 +200,36 @@ exports.Cmd = class Cmd
             else
                 opts.splice(pos, 1)[0]
 
-    _parseArr: (argv, opts = {}, args = {}) ->
+    _checkRequired: (opts, args) ->
+        if not (@_opts.filter (o) -> o._only and o._name of opts).length
+            all = @_opts.concat @_args
+            while i = all.shift()
+                if i._req and i._checkParsed opts, args
+                    return @reject i._requiredText()
+
+    _parseCmd: (argv, unparsed = []) ->
+        argv = argv.concat()
+        optSeen = false
+        while i = argv.shift()
+            if not i.indexOf '-'
+                optSeen = true
+            if not optSeen and /^\w[\w-_]*$/.test(i) and cmd = @_cmdsByName[i]
+                return cmd._parseCmd argv, unparsed
+
+            unparsed.push i
+
+        { cmd: @, argv: unparsed }
+
+    _parseOptsAndArgs: (argv) ->
+        opts = {}
+        args = {}
+
         nonParsedOpts = @_opts.concat()
+        nonParsedArgs = @_args.concat()
 
         while i = argv.shift()
             # opt
-            if not i.indexOf '-'
-
-                nonParsedArgs or= @_args.concat()
+            if i isnt '--' and not i.indexOf '-'
 
                 if m = i.match /^(--\w[\w-_]*)=(.*)$/
                     i = m[1]
@@ -194,65 +241,52 @@ exports.Cmd = class Cmd
                 else
                     return @reject "Unknown option: #{ i }"
 
-            # cmd
-            else if not nonParsedArgs and /^\w[\w-_]*$/.test i
-                cmd = @_cmdsByName[i]
-                if cmd
-                    return cmd._parseArr argv, opts, args
-                else
-                    nonParsedArgs = @_args.concat()
-                    argv.unshift i
-
             # arg
             else
-                if arg = (nonParsedArgs or= @_args.concat()).shift()
-                    if arg._arr then nonParsedArgs.unshift arg
-                    if Q.isPromise res = arg._parse i, args
-                        return res
-                else
-                    return @reject "Unknown argument: #{ i }"
+                if i is '--'
+                    i = argv.splice(0)
 
-        nonParsedArgs or= @_args.concat()
+                i = if Array.isArray(i) then i else [i]
 
-        hitOnly = false
-        for opt in @_opts
-            if opt._only and opt._name of opts
-                hitOnly = true
+                while a = i.shift()
+                    if arg = nonParsedArgs.shift()
+                        if arg._arr then nonParsedArgs.unshift arg
+                        if Q.isPromise res = arg._parse a, args
+                            return res
+                    else
+                        return @reject "Unknown argument: #{ a }"
 
-        if not hitOnly
-            nonParsed = nonParsedOpts.concat nonParsedArgs
-            while i = nonParsed.shift()
-                if i._req and i._checkParsed opts, args
-                    return @reject i._requiredText()
-                if '_def' of i
-                    i._saveVal opts, i._def
+        # defaults
+        nonParsed = nonParsedOpts.concat nonParsedArgs
+        while i = nonParsed.shift()
+            if '_def' of i then i._saveVal opts, i._def
 
-        { cmd: @, opts: opts, args: args }
+        { opts: opts, args: args }
+
+    _parseArr: (argv) ->
+        { cmd, argv } = @_parseCmd argv
+        if Q.isPromise res = cmd._parseOptsAndArgs argv
+            return res
+        { cmd: cmd, opts: res.opts, args: res.args }
 
     _do: (input, succ, err) ->
         defer = Q.defer()
         parsed = @_parseArr input
         cmd = parsed.cmd or @
-        cmd._act?.reduce(
+        [@_checkRequired].concat(cmd._act or []).reduce(
             (res, act) =>
-                res.then (params) =>
-                    actRes = act.call(
+                res.then (res) =>
+                    act.call(
                         cmd
-                        params.opts
-                        params.args
-                        params.res)
-
-                    if Q.isPromise actRes
-                        actRes
-                    else
-                        params.res ?= actRes
-                        params
+                        parsed.opts
+                        parsed.args
+                        res)
             defer.promise
         )
         .fail((res) => err.call cmd, res)
-        .then((res) => succ.call cmd, res.res)
+        .then((res) => succ.call cmd, res)
 
-        defer.resolve parsed
+        defer.resolve(if Q.isPromise parsed then parsed)
 
     ###*
     Parse arguments from simple format like NodeJS process.argv
@@ -261,7 +295,7 @@ exports.Cmd = class Cmd
     @returns {COA.Cmd} this instance (for chainability)
     ###
     run: (argv = process.argv.slice(2)) ->
-        cb = (code) -> (res) -> @_exit res.toString(), res.exitCode ? code
+        cb = (code) -> (res) -> @_exit res.stack ? res.toString(), res.exitCode ? code
         @_do argv, cb(0), cb(1)
         @
 
