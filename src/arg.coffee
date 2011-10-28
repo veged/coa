@@ -3,7 +3,8 @@ Cmd = require('./cmd').Cmd
 Opt = require('./opt').Opt
 
 ###*
-## Argument
+Argument
+
 Unnamed entity. From command line arguments passed as list of unnamed values.
 @namespace
 @class Presents argument
@@ -61,6 +62,17 @@ exports.Arg = class Arg
     @returns {COA.Arg} this instance (for chainability)
     ###
     def: Opt::def
+
+    ###*
+    Set custom additional completion for current argument.
+    @param {Function} completion generation function,
+        invoked in the context of argument instance.
+        Accepts parameters:
+            - {Object} opts completion options
+        It can return promise or any other value treated as result.
+    @returns {COA.Arg} this instance (for chainability)
+    ###
+    comp: Cmd::comp
 
     ###*
     Make argument value inputting stream.
