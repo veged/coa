@@ -1,7 +1,7 @@
 {
     "name" : "coa",
     "description" : "Command-Option-Argument: Yet another parser for command line options.",
-    "version" : "0.1.1",
+    "version" : "0.2.0",
     "homepage" : "http://github.com/veged/coa",
     "author" : {
         "name": "Sergey Berezhnoy",
