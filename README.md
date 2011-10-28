@@ -4,6 +4,10 @@ COA is a yet another parser for command line options.
 You can choose one of the [existing modules](https://github.com/joyent/node/wiki/modules#wiki-parsers-commandline),
 or write your own like me.
 
+## Features
+
+* Shell completion (experimantal)
+
 ## Examples
 
 ````javascript
@@ -97,8 +101,22 @@ Apply function with arguments in context of command instance.<br>
 **@param** *Array* `args`<br>
 **@returns** *COA.Cmd* `this` instance (for chainability)
 
+#### Cmd.comp
+Set custom additional completion for current command.<br>
+**@param** *Function* `fn` completion generation function,
+    invoked in the context of command instance.
+    Accepts parameters:<br>
+        - *Object* `opts` completion options<br>
+    It can return promise or any other value treated as result.<br>
+**@returns** *COA.Cmd* `this` instance (for chainability)
+
 #### Cmd.helpful
 Make command "helpful", i.e. add -h --help flags for print usage.<br>
+**@returns** *COA.Cmd* `this` instance (for chainability)
+
+#### Cmd.completable
+Adds shell completion to command, adds "completion" subcommand, that makes all the magic.<br>
+Must be called only on root command.<br>
 **@returns** *COA.Cmd* `this` instance (for chainability)
 
 #### Cmd.usage
@@ -137,7 +155,6 @@ Set a canonical option identifier to be used anywhere in the API.<br>
 Set a long description for option to be used anywhere in text messages.<br>
 **@param** *String* `_title` option title<br>
 **@returns** *COA.Opt* `this` instance (for chainability)
-
 
 #### Opt.short
 Set a short key for option to be used with one hyphen from command line.<br>
@@ -201,6 +218,15 @@ is present in parsed options (with any value).<br>
     or any other value treated as result.<br>
 **@returns** *COA.Opt* `this` instance (for chainability)
 
+#### Opt.comp
+Set custom additional completion for current option.<br>
+**@param** *Function* `fn` completion generation function,
+    invoked in the context of command instance.
+    Accepts parameters:<br>
+        - *Object* `opts` completion options<br>
+    It can return promise or any other value treated as result.<br>
+**@returns** *COA.Opt* `this` instance (for chainability)
+
 #### Opt.end
 Finish chain for current option and return parent command instance.<br>
 **@returns** *COA.Cmd* `parent` command
@@ -249,6 +275,15 @@ Make argument value outputing stream.<br>
 It's add useful validation and shortcut for STDOUT.<br>
 **@returns** *COA.Arg* `this` instance (for chainability)
 
+#### Opt.comp
+Set custom additional completion for current argument.<br>
+**@param** *Function* `fn` completion generation function,
+    invoked in the context of command instance.
+    Accepts parameters:<br>
+        - *Object* `opts` completion options<br>
+    It can return promise or any other value treated as result.<br>
+**@returns** *COA.Arg* `this` instance (for chainability)
+
 #### Arg.end
 Finish chain for current option and return parent command instance.<br>
 **@returns** *COA.Cmd* `parent` command
@@ -256,7 +291,6 @@ Finish chain for current option and return parent command instance.<br>
 
 ## TODO
 * Program API for use COA-covered programs as modules
-* Shell completion
 * Localization
 * Shell-mode
 * Configs
