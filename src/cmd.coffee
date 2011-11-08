@@ -264,29 +264,23 @@ exports.Cmd = class Cmd
         { opts: opts, args: args }
 
     _parseArr: (argv) ->
-        { cmd, argv } = @_parseCmd argv
-        if Q.isPromise res = cmd._parseOptsAndArgs argv
-            return res
-        { cmd: cmd, opts: res.opts, args: res.args }
+        Q.when @_parseCmd(argv), (p) ->
+            Q.when p.cmd._parseOptsAndArgs(p.argv), (r) ->
+                { cmd: p.cmd, opts: r.opts, args: r.args }
 
-    _do: (input, succ, err) ->
-        defer = Q.defer()
-        parsed = @_parseArr input
-        cmd = parsed.cmd or @
-        [@_checkRequired].concat(cmd._act or []).reduce(
-            (res, act) =>
-                res.then (res) =>
-                    act.call(
-                        cmd
-                        parsed.opts
-                        parsed.args
-                        res)
-            defer.promise
-        )
-        .fail((res) => err.call cmd, res)
-        .then((res) => succ.call cmd, res)
-
-        defer.resolve(if Q.isPromise parsed then parsed)
+    _do: (input) ->
+        Q.when input, (input) =>
+            cmd = input.cmd
+            [@_checkRequired].concat(cmd._act or []).reduce(
+                (res, act) ->
+                    Q.when res, (res) ->
+                        act.call(
+                            cmd
+                            input.opts
+                            input.args
+                            res)
+                undefined
+            )
 
     ###*
     Parse arguments from simple format like NodeJS process.argv
@@ -295,8 +289,12 @@ exports.Cmd = class Cmd
     @returns {COA.Cmd} this instance (for chainability)
     ###
     run: (argv = process.argv.slice(2)) ->
-        cb = (code) -> (res) -> @_exit res.stack ? res.toString(), res.exitCode ? code
-        @_do argv, cb(0), cb(1)
+        cb = (code) => (res) =>
+            if res
+                @_exit res.stack ? res.toString(), res.exitCode ? code
+            else
+                @_exit()
+        Q.when(@_do(@_parseArr argv), cb(0), cb(1)).end()
         @
 
     ###*
