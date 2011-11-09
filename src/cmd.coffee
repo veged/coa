@@ -1,5 +1,5 @@
-sys = require 'sys'
-path = require 'path'
+UTIL = require 'util'
+PATH = require 'path'
 Color = require('./color').Color
 Q = require('q')
 
@@ -145,7 +145,7 @@ exports.Cmd = class Cmd
             .end()
 
     _exit: (msg, code) ->
-        if msg then sys.error msg
+        if msg then UTIL.error msg
         process.exit code or 0
 
     ###*
@@ -191,7 +191,7 @@ exports.Cmd = class Cmd
         (if @_cmd is this then '' else @_cmd._fullTitle() + '\n') + @_title
 
     _fullName: ->
-        (if this._cmd is this then '' else @_cmd._fullName() + ' ') + path.basename(@_name)
+        (if this._cmd is this then '' else @_cmd._fullName() + ' ') + PATH.basename(@_name)
 
     _ejectOpt: (opts, opt) ->
         if (pos = opts.indexOf(opt)) >= 0
