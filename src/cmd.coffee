@@ -298,6 +298,27 @@ exports.Cmd = class Cmd
         @
 
     ###*
+    Invoke specified (or current) command using provided
+    options and arguments
+    @param {String|Array} cmds  subcommand to invoke (optional)
+    @param {Object} opts  command options (optional)
+    @param {Object} args  command arguments (optional)
+    @returns {Q.Promise}
+    ###
+    invoke: (cmds = [], opts = {}, args = {}) ->
+        if typeof cmds == 'string'
+            cmds = cmds.split(' ')
+        if arguments.length < 3
+            if not Array.isArray cmds
+                args = opts
+                opts = cmds
+                cmds = []
+        Q.when @_parseCmd(cmds), (p) =>
+            if p.argv.length
+                return @reject "Unknown command: " + cmds.join ' '
+            @_do({ cmd: p.cmd, opts: opts, args: args })
+
+    ###*
     Return reject of actions results promise with error code.
     Use in .act() for return with error.
     @param {Object} reject reason
