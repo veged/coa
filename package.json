@@ -9,6 +9,23 @@
         "web" : "http://github.com/veged"
     },
     "maintainers" : [
+        {
+            "name": "Sergey Berezhnoy",
+            "email" : "veged@ya.ru",
+            "web" : "http://github.com/veged"
+        },
+        {
+            "name": "Sergey Belov",
+            "email" : "peimei@ya.ru",
+            "web" : "http://github.com/arikon"
+        }
+    ],
+    "contributors" : [
+        {
+            "name": "Sergey Belov",
+            "email" : "peimei@ya.ru",
+            "web" : "http://github.com/arikon"
+        }
     ],
     "repository" : {
         "type" : "git",
