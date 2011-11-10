@@ -6,6 +6,7 @@ or write your own like me.
 
 ## Features
 
+* Program API for use COA-based programs as modules (experimantal)
 * Shell completion (experimantal)
 
 ## Examples
@@ -58,6 +59,10 @@ exports.COA = function() {
 
 ### Cmd
 Command is a top level entity. Commands may have options and arguments.
+
+#### Cmd.api
+Returns object containing all its subcommands as methods to use from other programs.<br>
+**@returns** *{Object}*
 
 #### Cmd.name
 Set a canonical command identifier to be used anywhere in the API.<br>
@@ -297,7 +302,6 @@ Finish chain for current option and return parent command instance.<br>
 
 
 ## TODO
-* Program API for use COA-covered programs as modules
 * Localization
 * Shell-mode
 * Configs

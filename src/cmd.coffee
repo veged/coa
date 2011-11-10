@@ -32,6 +32,25 @@ exports.Cmd = class Cmd
 
         @_args = []
 
+    @get: (propertyName, func) ->
+        Object.defineProperty @::, propertyName,
+            configurable: true
+            enumerable: true
+            get: func
+
+    ###*
+    Returns object containing all its subcommands as methods
+    to use from other programs.
+    @returns {Object}
+    ###
+    @get 'api', () ->
+        if not @_api
+            @_api = => @invoke.apply @, arguments
+        for c of @_cmdsByName
+            do (c) =>
+                @_api[c] = @_cmdsByName[c].api
+        @_api
+
     _parent: (cmd) ->
         if cmd then cmd._cmds.push @
         @_cmd = cmd or this
@@ -308,15 +327,23 @@ exports.Cmd = class Cmd
     invoke: (cmds = [], opts = {}, args = {}) ->
         if typeof cmds == 'string'
             cmds = cmds.split(' ')
+
         if arguments.length < 3
             if not Array.isArray cmds
                 args = opts
                 opts = cmds
                 cmds = []
+
         Q.when @_parseCmd(cmds), (p) =>
             if p.argv.length
                 return @reject "Unknown command: " + cmds.join ' '
-            @_do({ cmd: p.cmd, opts: opts, args: args })
+
+            # catch fails from .only() options
+            Q.fail @_do({ cmd: p.cmd, opts: opts, args: args }), (res) =>
+                if res and res.exitCode is 0
+                    res.toString()
+                else
+                    @reject(res)
 
     ###*
     Return reject of actions results promise with error code.
