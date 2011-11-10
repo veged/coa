@@ -125,9 +125,16 @@ Build full usage text for current command instance.<br>
 
 #### Cmd.run
 Parse arguments from simple format like NodeJS process.argv
-and run ahead current program, i.e. call process.exit when all actions done.
+and run ahead current program, i.e. call process.exit when all actions done.<br>
 **@param** *Array* `argv`<br>
 **@returns** *COA.Cmd* `this` instance (for chainability)
+
+#### Cmd.invoke
+Invoke specified (or current) command using provided options and arguments.<br>
+**@param** *String|Array* `cmds`  subcommand to invoke (optional)<br>
+**@param** *Object* `opts`  command options (optional)<br>
+**@param** *Object* `args`  command arguments (optional)<br>
+**@returns** *Q.Promise*
 
 #### Cmd.reject
 Return reject of actions results promise.<br>

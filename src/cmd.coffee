@@ -299,7 +299,7 @@ exports.Cmd = class Cmd
 
     ###*
     Invoke specified (or current) command using provided
-    options and arguments
+    options and arguments.
     @param {String|Array} cmds  subcommand to invoke (optional)
     @param {Object} opts  command options (optional)
     @param {Object} args  command arguments (optional)
