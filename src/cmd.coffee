@@ -252,7 +252,10 @@ exports.Cmd = class Cmd
 
                 if m = i.match /^(--\w[\w-_]*)=(.*)$/
                     i = m[1]
-                    argv.unshift m[2]
+
+                    # suppress 'unknown argument' error for flag options with values
+                    if not @_optsByKey[i]._flag
+                        argv.unshift m[2]
 
                 if opt = @_ejectOpt nonParsedOpts, @_optsByKey[i]
                     if Q.isPromise res = opt._parse argv, opts
