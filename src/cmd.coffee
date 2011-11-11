@@ -278,12 +278,36 @@ exports.Cmd = class Cmd
                     else
                         return @reject "Unknown argument: #{ a }"
 
-        # defaults
-        nonParsed = nonParsedOpts.concat nonParsedArgs
-        while i = nonParsed.shift()
-            if '_def' of i then i._saveVal opts, i._def
+        # set defaults
+        {
+            opts: @_setDefaults(opts, nonParsedOpts),
+            args: @_setDefaults(args, nonParsedArgs)
+        }
 
-        { opts: opts, args: args }
+    _setDefaults: (params, desc) ->
+        for i in desc
+            if i._name not of params and '_def' of i
+                i._saveVal params, i._def
+        params
+
+    _processParams: (params, desc) ->
+        notExists = []
+        for i in desc
+            n = i._name
+            if n not of params
+                notExists.push i
+                continue
+
+            vals = params[n]
+            delete params[n]
+            if not Array.isArray vals
+                vals = [vals]
+
+            for v in vals
+                i._saveVal(params, v)
+
+        # set defaults
+        @_setDefaults params, notExists
 
     _parseArr: (argv) ->
         Q.when @_parseCmd(argv), (p) ->
@@ -342,11 +366,18 @@ exports.Cmd = class Cmd
                 return @reject "Unknown command: " + cmds.join ' '
 
             # catch fails from .only() options
-            Q.fail @_do({ cmd: p.cmd, opts: opts, args: args }), (res) =>
-                if res and res.exitCode is 0
-                    res.toString()
-                else
-                    @reject(res)
+            Q.fail(
+                @_do({
+                    cmd: p.cmd,
+                    opts: @_processParams(opts, @_opts),
+                    args: @_processParams(args, @_args)
+                }),
+                (res) =>
+                    if res and res.exitCode is 0
+                        res.toString()
+                    else
+                        @reject(res)
+            )
 
     ###*
     Return reject of actions results promise with error code.
