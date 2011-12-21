@@ -164,8 +164,9 @@ exports.Cmd = class Cmd
             .end()
 
     _exit: (msg, code) ->
-        if msg then UTIL.error msg
-        process.exit code or 0
+        process.once 'exit', ->
+            if msg then UTIL.error msg
+            process.exit code or 0
 
     ###*
     Build full usage text for current command instance.
