@@ -258,7 +258,7 @@ exports.Cmd = class Cmd
                         argv.unshift m[2]
 
                 if opt = @_ejectOpt nonParsedOpts, @_optsByKey[i]
-                    if Q.isPromise res = opt._parse argv, opts
+                    if Q.isPromise(res = opt._parse argv, opts)
                         return res
                 else
                     return @reject "Unknown option: #{ i }"
@@ -273,7 +273,7 @@ exports.Cmd = class Cmd
                 while a = i.shift()
                     if arg = nonParsedArgs.shift()
                         if arg._arr then nonParsedArgs.unshift arg
-                        if Q.isPromise res = arg._parse a, args
+                        if Q.isPromise(res = arg._parse a, args)
                             return res
                     else
                         return @reject "Unknown argument: #{ a }"
