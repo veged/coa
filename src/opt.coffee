@@ -105,6 +105,10 @@ exports.Opt = class Opt
     @returns {COA.Opt} this instance (for chainability)
     ###
     input: ->
+        # XXX: hack to workaround a bug in node 0.6.x,
+        # see https://github.com/joyent/node/issues/2130
+        process.stdin.pause();
+
         @
             .def(process.stdin)
             .val (v) ->
