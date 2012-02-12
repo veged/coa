@@ -1,27 +1,37 @@
 {
-    "name" : "coa",
-    "description" : "Command-Option-Argument: Yet another parser for command line options.",
-    "version" : "0.2.0",
-    "homepage" : "http://github.com/veged/coa",
-    "author" : {
-        "name": "Sergey Berezhnoy",
-        "email" : "veged@ya.ru",
-        "web" : "http://github.com/veged"
-    },
-    "maintainers" : [
-    ],
-    "repository" : {
-        "type" : "git",
-        "url" : "http://github.com/veged/coa.git"
-    },
-    "directories" : { "lib" : "./lib" },
-    "main" : "./lib/coa.js",
-    "dependencies" : {
-        "q": ">=0.7.1"
-    },
-    "devDependencies" : {
-        "vows": ">=0.5.12"
-    },
-    "engines" : [ "node ~0.4.0" ],
-    "licenses" : [ { "type" : "AS IS" } ]
+  "name": "coa",
+  "description": "Command-Option-Argument: Yet another parser for command line options.",
+  "version": "0.3.4",
+  "homepage": "http://github.com/veged/coa",
+  "author": "Sergey Berezhnoy <veged@ya.ru> (http://github.com/veged)",
+  "maintainers": [
+    "Sergey Berezhnoy <veged@ya.ru> (http://github.com/veged)",
+    "Sergey Belov <peimei@ya.ru> (http://github.com/arikon)"
+  ],
+  "contributors": [
+    "Sergey Belov <peimei@ya.ru> (http://github.com/arikon)"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/veged/coa.git"
+  },
+  "directories": {
+    "lib": "./lib"
+  },
+  "main": "./lib/coa.js",
+  "dependencies": {
+    "q": "~0.7.2"
+  },
+  "devDependencies": {
+    "vows": "~0.5.12"
+  },
+  "engines": {
+    "node": ">=0.4.0 <0.7.0"
+  },
+  "licenses": [
+    {
+      "type": "AS IS"
+    }
+  ],
+  "optionalDependencies": {}
 }

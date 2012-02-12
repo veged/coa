@@ -1,5 +1,5 @@
-sys = require 'sys'
-path = require 'path'
+UTIL = require 'util'
+PATH = require 'path'
 Color = require('./color').Color
 Q = require('q')
 
@@ -31,6 +31,25 @@ exports.Cmd = class Cmd
         @_optsByKey = {}
 
         @_args = []
+
+    @get: (propertyName, func) ->
+        Object.defineProperty @::, propertyName,
+            configurable: true
+            enumerable: true
+            get: func
+
+    ###*
+    Returns object containing all its subcommands as methods
+    to use from other programs.
+    @returns {Object}
+    ###
+    @get 'api', () ->
+        if not @_api
+            @_api = => @invoke.apply @, arguments
+        for c of @_cmdsByName
+            do (c) =>
+                @_api[c] = @_cmdsByName[c].api
+        @_api
 
     _parent: (cmd) ->
         if cmd then cmd._cmds.push @
@@ -145,8 +164,9 @@ exports.Cmd = class Cmd
             .end()
 
     _exit: (msg, code) ->
-        if msg then sys.error msg
-        process.exit code or 0
+        process.once 'exit', ->
+            if msg then UTIL.error msg
+            process.exit code or 0
 
     ###*
     Build full usage text for current command instance.
@@ -191,7 +211,7 @@ exports.Cmd = class Cmd
         (if @_cmd is this then '' else @_cmd._fullTitle() + '\n') + @_title
 
     _fullName: ->
-        (if this._cmd is this then '' else @_cmd._fullName() + ' ') + path.basename(@_name)
+        (if this._cmd is this then '' else @_cmd._fullName() + ' ') + PATH.basename(@_name)
 
     _ejectOpt: (opts, opt) ->
         if (pos = opts.indexOf(opt)) >= 0
@@ -233,10 +253,13 @@ exports.Cmd = class Cmd
 
                 if m = i.match /^(--\w[\w-_]*)=(.*)$/
                     i = m[1]
-                    argv.unshift m[2]
+
+                    # suppress 'unknown argument' error for flag options with values
+                    if not @_optsByKey[i]._flag
+                        argv.unshift m[2]
 
                 if opt = @_ejectOpt nonParsedOpts, @_optsByKey[i]
-                    if Q.isPromise res = opt._parse argv, opts
+                    if Q.isPromise(res = opt._parse argv, opts)
                         return res
                 else
                     return @reject "Unknown option: #{ i }"
@@ -251,42 +274,60 @@ exports.Cmd = class Cmd
                 while a = i.shift()
                     if arg = nonParsedArgs.shift()
                         if arg._arr then nonParsedArgs.unshift arg
-                        if Q.isPromise res = arg._parse a, args
+                        if Q.isPromise(res = arg._parse a, args)
                             return res
                     else
                         return @reject "Unknown argument: #{ a }"
 
-        # defaults
-        nonParsed = nonParsedOpts.concat nonParsedArgs
-        while i = nonParsed.shift()
-            if '_def' of i then i._saveVal opts, i._def
+        # set defaults
+        {
+            opts: @_setDefaults(opts, nonParsedOpts),
+            args: @_setDefaults(args, nonParsedArgs)
+        }
 
-        { opts: opts, args: args }
+    _setDefaults: (params, desc) ->
+        for i in desc
+            if i._name not of params and '_def' of i
+                i._saveVal params, i._def
+        params
+
+    _processParams: (params, desc) ->
+        notExists = []
+        for i in desc
+            n = i._name
+            if n not of params
+                notExists.push i
+                continue
+
+            vals = params[n]
+            delete params[n]
+            if not Array.isArray vals
+                vals = [vals]
+
+            for v in vals
+                i._saveVal(params, v)
+
+        # set defaults
+        @_setDefaults params, notExists
 
     _parseArr: (argv) ->
-        { cmd, argv } = @_parseCmd argv
-        if Q.isPromise res = cmd._parseOptsAndArgs argv
-            return res
-        { cmd: cmd, opts: res.opts, args: res.args }
+        Q.when @_parseCmd(argv), (p) ->
+            Q.when p.cmd._parseOptsAndArgs(p.argv), (r) ->
+                { cmd: p.cmd, opts: r.opts, args: r.args }
 
-    _do: (input, succ, err) ->
-        defer = Q.defer()
-        parsed = @_parseArr input
-        cmd = parsed.cmd or @
-        [@_checkRequired].concat(cmd._act or []).reduce(
-            (res, act) =>
-                res.then (res) =>
-                    act.call(
-                        cmd
-                        parsed.opts
-                        parsed.args
-                        res)
-            defer.promise
-        )
-        .fail((res) => err.call cmd, res)
-        .then((res) => succ.call cmd, res)
-
-        defer.resolve(if Q.isPromise parsed then parsed)
+    _do: (input) ->
+        Q.when input, (input) =>
+            cmd = input.cmd
+            [@_checkRequired].concat(cmd._act or []).reduce(
+                (res, act) ->
+                    Q.when res, (res) ->
+                        act.call(
+                            cmd
+                            input.opts
+                            input.args
+                            res)
+                undefined
+            )
 
     ###*
     Parse arguments from simple format like NodeJS process.argv
@@ -295,9 +336,49 @@ exports.Cmd = class Cmd
     @returns {COA.Cmd} this instance (for chainability)
     ###
     run: (argv = process.argv.slice(2)) ->
-        cb = (code) -> (res) -> @_exit res.stack ? res.toString(), res.exitCode ? code
-        @_do argv, cb(0), cb(1)
+        cb = (code) => (res) =>
+            if res
+                @_exit res.stack ? res.toString(), res.exitCode ? code
+            else
+                @_exit()
+        Q.when(@_do(@_parseArr argv), cb(0), cb(1)).end()
         @
+
+    ###*
+    Invoke specified (or current) command using provided
+    options and arguments.
+    @param {String|Array} cmds  subcommand to invoke (optional)
+    @param {Object} opts  command options (optional)
+    @param {Object} args  command arguments (optional)
+    @returns {Q.Promise}
+    ###
+    invoke: (cmds = [], opts = {}, args = {}) ->
+        if typeof cmds == 'string'
+            cmds = cmds.split(' ')
+
+        if arguments.length < 3
+            if not Array.isArray cmds
+                args = opts
+                opts = cmds
+                cmds = []
+
+        Q.when @_parseCmd(cmds), (p) =>
+            if p.argv.length
+                return @reject "Unknown command: " + cmds.join ' '
+
+            # catch fails from .only() options
+            Q.fail(
+                @_do({
+                    cmd: p.cmd,
+                    opts: @_processParams(opts, @_opts),
+                    args: @_processParams(args, @_args)
+                }),
+                (res) =>
+                    if res and res.exitCode is 0
+                        res.toString()
+                    else
+                        @reject(res)
+            )
 
     ###*
     Return reject of actions results promise with error code.

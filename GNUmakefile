@@ -9,3 +9,7 @@ lib/%.js: src/%.coffee
 .PHONY: test
 test: lib
 	./node_modules/.bin/vows --spec
+
+.PHONY: watch
+watch:
+	coffee --watch --bare --output lib src/*.coffee

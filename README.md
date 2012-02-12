@@ -6,6 +6,7 @@ or write your own like me.
 
 ## Features
 
+* Program API for use COA-based programs as modules (experimantal)
 * Shell completion (experimantal)
 
 ## Examples
@@ -58,6 +59,10 @@ exports.COA = function() {
 
 ### Cmd
 Command is a top level entity. Commands may have options and arguments.
+
+#### Cmd.api
+Returns object containing all its subcommands as methods to use from other programs.<br>
+**@returns** *{Object}*
 
 #### Cmd.name
 Set a canonical command identifier to be used anywhere in the API.<br>
@@ -125,9 +130,16 @@ Build full usage text for current command instance.<br>
 
 #### Cmd.run
 Parse arguments from simple format like NodeJS process.argv
-and run ahead current program, i.e. call process.exit when all actions done.
+and run ahead current program, i.e. call process.exit when all actions done.<br>
 **@param** *Array* `argv`<br>
 **@returns** *COA.Cmd* `this` instance (for chainability)
+
+#### Cmd.invoke
+Invoke specified (or current) command using provided options and arguments.<br>
+**@param** *String|Array* `cmds`  subcommand to invoke (optional)<br>
+**@param** *Object* `opts`  command options (optional)<br>
+**@param** *Object* `args`  command arguments (optional)<br>
+**@returns** *Q.Promise*
 
 #### Cmd.reject
 Return reject of actions results promise.<br>
@@ -290,7 +302,6 @@ Finish chain for current option and return parent command instance.<br>
 
 
 ## TODO
-* Program API for use COA-covered programs as modules
 * Localization
 * Shell-mode
 * Configs
