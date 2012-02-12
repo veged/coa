@@ -20,10 +20,10 @@
   },
   "main": "./lib/coa.js",
   "dependencies": {
-    "q": ">=0.7.1"
+    "q": "~0.7.2"
   },
   "devDependencies": {
-    "vows": ">=0.5.12"
+    "vows": "~0.5.12"
   },
   "engines": {
     "node": ">=0.4.0 <0.7.0"
