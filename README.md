@@ -2,20 +2,20 @@
 
 COA is a parser for command line options that aim to get maximum profit from formalization your program API.
 Once you write definition in terms of commands, options and arguments you automaticaly get:
-* Command line help text
-* Program API for use COA-based programs as modules
-* Shell completion
+ * Command line help text
+ * Program API for use COA-based programs as modules
+ * Shell completion
 
 Other features:
-* Rich types for options and arguments, such as arrays, boolean flags and required
-* Commands can be async throught using promising (powered by [Q](https://github.com/kriskowal/q))
-* Easy submoduling some existing commands to new top-level one
-* Combined validation and complex parsing of values
+ * Rich types for options and arguments, such as arrays, boolean flags and required
+ * Commands can be async throught using promising (powered by [Q](https://github.com/kriskowal/q))
+ * Easy submoduling some existing commands to new top-level one
+ * Combined validation and complex parsing of values
 
 TODO:
-* Localization
-* Shell-mode
-* Configs
+ * Localization
+ * Shell-mode
+ * Configs
   * Aliases
   * Defaults
 
