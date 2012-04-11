@@ -1,5 +1,7 @@
 # Command-Option-Argument
 
+## What is it?
+
 COA is a parser for command line options that aim to get maximum profit from formalization your program API.
 Once you write definition in terms of commands, options and arguments you automaticaly get:
 
@@ -7,14 +9,14 @@ Once you write definition in terms of commands, options and arguments you automa
 * Program API for use COA-based programs as modules
 * Shell completion
 
-Other features:
+### Other features
 
 * Rich types for options and arguments, such as arrays, boolean flags and required
 * Commands can be async throught using promising (powered by [Q](https://github.com/kriskowal/q))
 * Easy submoduling some existing commands to new top-level one
 * Combined validation and complex parsing of values
 
-TODO:
+### TODO
 
 * Localization
 * Shell-mode
