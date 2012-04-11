@@ -1,13 +1,23 @@
 # Command-Option-Argument
 
-COA is a yet another parser for command line options.
-You can choose one of the [existing modules](https://github.com/joyent/node/wiki/modules#wiki-parsers-commandline),
-or write your own like me.
+COA is a parser for command line options that aim to get maximum profit from formalization your program API.
+Once you write definition in terms of commands, options and arguments you automaticaly get:
+* Command line help text
+* Program API for use COA-based programs as modules
+* Shell completion
 
-## Features
+Other features:
+* Rich types for options and arguments, such as arrays, boolean flags and required
+* Commands can be async throught using promising (powered by [Q](https://github.com/kriskowal/q))
+* Easy submoduling some existing commands to new top-level one
+* Combined validation and complex parsing of values
 
-* Program API for use COA-based programs as modules (experimantal)
-* Shell completion (experimantal)
+TODO:
+* Localization
+* Shell-mode
+* Configs
+  * Aliases
+  * Defaults
 
 ## Examples
 
@@ -55,7 +65,7 @@ exports.COA = function() {
 };
 ````
 
-## API
+## API reference
 
 ### Cmd
 Command is a top level entity. Commands may have options and arguments.
@@ -299,11 +309,3 @@ Set custom additional completion for current argument.<br>
 #### Arg.end
 Finish chain for current option and return parent command instance.<br>
 **@returns** *COA.Cmd* `parent` command
-
-
-## TODO
-* Localization
-* Shell-mode
-* Configs
-  * Aliases
-  * Defaults
