@@ -17,8 +17,9 @@ colors =
     white: '1;37'
 
 exports.Color = (c, str) ->
+    # Use \x1B instead of \033 because of CoffeeScript 1.3.x compilation error
     [
-        '\033[', colors[c], 'm'
+        '\x1B[', colors[c], 'm'
         str
-        '\033[m'
+        '\x1B[m'
     ].join ''
