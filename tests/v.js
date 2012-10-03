@@ -9,9 +9,7 @@ require('../lib/coa').Cmd()
         .flag()
         .only()
         .act(function(opts, args) {
-            return JSON.parse(
-                require('fs').readFileSync(__dirname + '/../package.json'))
-                    .version
+            return require('../package.json').version;
         })
         .end()
     .opt()

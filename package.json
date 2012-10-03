@@ -20,17 +20,17 @@
   },
   "main": "./lib/coa.js",
   "dependencies": {
-    "q": "~0.7.2"
+    "q": "~0.8.8"
   },
   "devDependencies": {
-    "vows": "~0.5.12"
+    "vows": "~0.6.4"
   },
   "engines": {
-    "node": ">=0.4.0"
+    "node": ">= 0.6.0"
   },
   "licenses": [
     {
-      "type": "AS IS"
+      "type": "MIT"
     }
   ],
   "optionalDependencies": {}
