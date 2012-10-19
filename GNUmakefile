@@ -4,7 +4,7 @@ all: lib
 lib: $(foreach s,$(wildcard src/*.coffee),$(patsubst src/%.coffee,lib/%.js,$s))
 
 lib/%.js: src/%.coffee
-	coffee -cb -o $(@D) $<
+	./node_modules/.bin/coffee -cb -o $(@D) $<
 
 .PHONY: test
 test: lib
