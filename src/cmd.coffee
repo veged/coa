@@ -305,7 +305,8 @@ exports.Cmd = class Cmd
                 vals = [vals]
 
             for v in vals
-                i._saveVal(params, v)
+                if Q.isRejected(res = i._saveVal(params, v))
+                    return res
 
         # set defaults
         @_setDefaults params, notExists
@@ -366,19 +367,15 @@ exports.Cmd = class Cmd
             if p.argv.length
                 return @reject "Unknown command: " + cmds.join ' '
 
-            # catch fails from .only() options
-            Q.fail(
-                @_do({
-                    cmd: p.cmd,
-                    opts: @_processParams(opts, @_opts),
-                    args: @_processParams(args, @_args)
-                }),
-                (res) =>
-                    if res and res.exitCode is 0
-                        res.toString()
-                    else
-                        @reject(res)
-            )
+            Q.all([@_processParams(opts, @_opts), @_processParams(args, @_args)])
+                .spread (opts, args) =>
+                    @_do({ cmd: p.cmd, opts: opts, args: args })
+                        # catch fails from .only() options
+                        .fail (res) =>
+                            if res and res.exitCode is 0
+                                res.toString()
+                            else
+                                @reject(res)
 
     ###*
     Return reject of actions results promise with error code.
