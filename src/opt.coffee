@@ -212,6 +212,8 @@ exports.Opt = class Opt
 
         res.push ' : ', @_title
 
+        if @_req then res.push ' ', Color('lred', '(required)')
+
         res.join ''
 
     _requiredText: -> 'Missing required option:\n  ' + @_usage()

@@ -95,7 +95,13 @@ exports.Arg = class Arg
 
     _checkParsed: (opts, args) -> not args.hasOwnProperty(@_name)
 
-    _usage: -> Color('lpurple', @_name.toUpperCase()) + ' : ' + @_title
+    _usage: ->
+        res = []
+
+        res.push Color('lpurple', @_name.toUpperCase()), ' : ', @_title
+        if @_req then res.push ' ', Color('lred', '(required)')
+
+        res.join ''
 
     _requiredText: -> 'Missing required argument:\n  ' + @_usage()
 
