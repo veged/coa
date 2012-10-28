@@ -1,6 +1,6 @@
 var vows = require('vows'),
     assert = require('assert'),
-    shell = require('../lib/shell');
+    shell = require('..').shell;
 
 vows.describe('coa/shell').addBatch({
 

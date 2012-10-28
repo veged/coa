@@ -18,7 +18,6 @@
   "directories": {
     "lib": "./lib"
   },
-  "main": "./lib/coa.js",
   "dependencies": {
     "q": "~0.8.8"
   },
