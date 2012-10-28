@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/veged/coa.png)](http://travis-ci.org/veged/coa)
 # Command-Option-Argument
 
 ## What is it?
