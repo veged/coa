@@ -13,11 +13,11 @@ lib/%.js: src/%.coffee
 
 .PHONY: test
 test: lib
-	$(BIN)/vows --spec
+	$(BIN)/mocha
 
 .PHONY: coverage
 coverage: lib-cov
-	COVER=1 $(BIN)/vows --spec
+	COVER=1 $(BIN)/mocha --reporter mocha-istanbul
 
 .PHONY: watch
 watch:

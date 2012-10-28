@@ -24,7 +24,12 @@
   "devDependencies": {
     "coffee-script": "~1.4.0",
     "istanbul": "~0.1.11",
-    "vows": "~0.6.4"
+    "mocha-istanbul": "*",
+    "mocha": "~1.6.0"
+  },
+  "scripts": {
+    "test": "make test",
+    "coverage": "make coverage"
   },
   "engines": {
     "node": ">= 0.6.0"
