@@ -23,6 +23,7 @@
   },
   "devDependencies": {
     "coffee-script": "~1.4.0",
+    "istanbul": "~0.1.11",
     "vows": "~0.6.4"
   },
   "engines": {
