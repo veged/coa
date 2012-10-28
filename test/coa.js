@@ -205,6 +205,9 @@ describe('Opt', function() {
 
     });
 
+    it('input()');
+    it('output()');
+
 });
 
 describe('Arg', function() {
@@ -336,7 +339,10 @@ describe('Arg', function() {
 
 describe('Cmd', function() {
 
-    it('TODO');
+    it('helpful(), name(), title()');
+    it('cmd()');
+    it('api');
+    it('invoke()');
 
 });
 
