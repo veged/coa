@@ -240,9 +240,17 @@ describe('Arg', function() {
             .arg()
                 .name('a')
                 .arr()
-                .end();
+                .end()
+            .act(function(opts, args) {
+                return args;
+            });
 
-        it('should return array of passed values');
+        it('should return array of passed values', function() {
+            return cmd.do(['value 1', 'value 2'])
+                .then(function(args) {
+                    assert.deepEqual(args, { a: ['value 1', 'value 2'] });
+                });
+        });
 
     });
 
@@ -252,10 +260,22 @@ describe('Arg', function() {
             .arg()
                 .name('a')
                 .req()
-                .end();
+                .end()
+            .act(function(opts, args) {
+                return args;
+            });
 
-        it('should fail if not specified');
-        it('should return passed value if specified');
+        it('should fail if not specified', function() {
+            return cmd.do()
+                .then(assert.fail, emptyFn);
+        });
+
+        it('should return passed value if specified', function() {
+            return cmd.do(['value'])
+                .then(function(args) {
+                    assert.equal(args.a, 'value');
+                });
+        });
 
     });
 
