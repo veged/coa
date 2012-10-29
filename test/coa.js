@@ -1,6 +1,5 @@
 var assert = require('chai').assert,
-    COA = require('..'),
-    Q = require('q');
+    COA = require('..');
 
 /**
  * Mocha BDD interface.
@@ -65,7 +64,7 @@ describe('Opt', function() {
             });
 
         it('should return passed values', function() {
-            return cmd.do(['--long1', 'long value', '--long2', 'another long value'])
+            return cmd.do(['--long1', 'long value', '--long2=another long value'])
                 .then(function(res) {
                     assert.deepEqual(res, { long1: 'long value', long2: 'another long value' });
                 });
@@ -155,7 +154,7 @@ describe('Opt', function() {
                 .name('a')
                 .short('a')
                 .val(function(v) {
-                    if (v === 'invalid') return Q.reject('fail');
+                    if (v === 'invalid') return this.reject('fail');
                     return { value: v };
                 })
                 .end()
@@ -339,10 +338,82 @@ describe('Arg', function() {
 
 describe('Cmd', function() {
 
+    describe('Subcommand', function() {
+
+        var cmd = COA.Cmd()
+            .cmd()
+                .name('command')
+                .opt()
+                    .name('opt')
+                    .long('opt')
+                    .end()
+                .arg()
+                    .name('arg1')
+                    .end()
+                .arg()
+                    .name('arg2')
+                    .arr()
+                    .end()
+                .act(function(opts, args) {
+                    return { opts: opts, args: args };
+                })
+                .end(),
+
+            doTest = function(o) {
+                    assert.deepEqual(o, {
+                        opts: { opt: 'value' },
+                        args: {
+                            arg1: 'value',
+                            arg2: ['value 1', 'value 2']
+                        }
+                    });
+                },
+
+            invokeOpts = { opt: 'value' },
+            invokeArgs = {
+                    arg1: 'value',
+                    arg2:  ['value 1', 'value 2']
+                };
+
+        describe('when specified on command line', function() {
+
+            it('should be invoked and accept passed opts and args', function() {
+                return cmd.do(['command', '--opt', 'value', 'value', 'value 1', 'value 2'])
+                    .then(doTest);
+            });
+
+        });
+
+        describe('when invoked using api', function() {
+
+            it('should be invoked and accept passed opts and args', function() {
+                return cmd.api.command(invokeOpts, invokeArgs)
+                    .then(doTest);
+            });
+
+        });
+
+        describe('when invoked using invoke()', function() {
+
+            it('should be invoked and accept passed opts and args', function() {
+                return cmd.invoke('command', invokeOpts, invokeArgs)
+                    .then(doTest);
+            });
+
+        });
+
+        describe('when unexisting command invoked using invoke()', function() {
+
+            it('should fail', function() {
+                return cmd.invoke('unexistent')
+                    .then(assert.fail, emptyFn);
+            });
+
+        });
+
+    });
+
     it('helpful(), name(), title()');
-    it('cmd()');
-    it('api');
-    it('invoke()');
 
 });
 
