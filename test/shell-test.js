@@ -1,59 +1,60 @@
-var vows = require('vows'),
-    assert = require('assert'),
-    shell = require('../lib/shell');
+var assert = require('chai').assert,
+    shell = require('..').shell;
 
-vows.describe('coa/shell').addBatch({
+/**
+ * Mocha BDD interface.
+ */
+/** @name describe @function */
+/** @name it @function */
+/** @name before @function */
+/** @name after @function */
+/** @name beforeEach @function */
+/** @name afterEach @function */
 
-    'The shell module': {
+describe('shell', function() {
 
-        '`escape`': {
+    describe('escape()', function() {
 
-            topic: function() {
-                return shell.escape;
-            },
+        var escape = shell.escape;
 
-            'Should wrap values with spaces in double quotes': function(escape) {
-                assert.equal(escape('asd abc'), '"asd abc"');
-            },
+        it('Should wrap values with spaces in double quotes', function() {
+            assert.equal(escape('asd abc'), '"asd abc"');
+        });
 
-            'Should escape double quote "': function(escape) {
-                assert.equal(escape('"asd'), '\\"asd');
-            },
+        it('Should escape double quote "', function() {
+            assert.equal(escape('"asd'), '\\"asd');
+        });
 
-            "Should escape single quote '": function(escape) {
-                assert.equal(escape("'asd"), "\\'asd");
-            },
+        it("Should escape single quote '", function() {
+            assert.equal(escape("'asd"), "\\'asd");
+        });
 
-            'Should escape backslash \\': function(escape) {
-                assert.equal(escape('\\asd'), '\\\\asd');
-            },
+        it('Should escape backslash \\', function() {
+            assert.equal(escape('\\asd'), '\\\\asd');
+        });
 
-            'Should escape dollar $': function(escape) {
-                assert.equal(escape('$asd'), '\\$asd');
-            },
+        it('Should escape dollar $', function() {
+            assert.equal(escape('$asd'), '\\$asd');
+        });
 
-            'Should escape backtick `': function(escape) {
-                assert.equal(escape('`asd'), '\\`asd');
-            }
+        it('Should escape backtick `', function() {
+            assert.equal(escape('`asd'), '\\`asd');
+        });
 
-        },
+    });
 
-        '`unescape`': {
+    describe('unescape()', function() {
 
-            topic: function() {
-                return shell.unescape;
-            },
+        var unescape = shell.unescape;
 
-            'Should strip double quotes at the both ends': function(unescape) {
-                assert.equal(unescape('"asd"'), 'asd');
-            },
+        it('Should strip double quotes at the both ends', function() {
+            assert.equal(unescape('"asd"'), 'asd');
+        });
 
-            'Should not strip escaped double quotes at the both ends': function(unescape) {
-                assert.equal(unescape('\\"asd\\"'), '"asd"');
-            }
+        it('Should not strip escaped double quotes at the both ends', function() {
+            assert.equal(unescape('\\"asd\\"'), '"asd"');
+        });
 
-        }
+    });
 
-    }
-
-}).export(module);
+});

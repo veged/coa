@@ -1,4 +1,4 @@
-require('../lib/coa').Cmd()
+require('..').Cmd()
     .name('bla')
     .title('Bla bla bla')
     .helpful()
