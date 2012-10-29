@@ -342,8 +342,16 @@ exports.Cmd = class Cmd
                 @_exit res.stack ? res.toString(), res.exitCode ? code
             else
                 @_exit()
-        Q.when(@_do(@_parseArr argv), cb(0), cb(1)).end()
+        Q.when(@do(argv), cb(0), cb(1)).end()
         @
+
+    ###*
+    Convenient function to run command from tests.
+    @param {Array} argv
+    @returns {Q.Promise}
+    ###
+    do: (argv) ->
+        @_do(@_parseArr argv || [])
 
     ###*
     Invoke specified (or current) command using provided
