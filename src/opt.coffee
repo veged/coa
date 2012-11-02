@@ -1,5 +1,6 @@
 fs = require 'fs'
 Q = require 'q'
+SHELL = require './shell'
 Color = require('./color').Color
 Cmd = require('./cmd').Cmd
 
@@ -120,6 +121,7 @@ exports.Opt = class Opt
                         s.pause()
                         s
                 else v
+            .path()
 
     ###*
     Make option value outputing stream.
@@ -136,6 +138,14 @@ exports.Opt = class Opt
                     else
                         fs.createWriteStream v, { encoding: 'utf8' }
                 else v
+            .path()
+
+    ###*
+    Add path shell completion to the option.
+    @returns {COA.Opt} this instance (for chainability)
+    ###
+    path: ->
+        @.comp SHELL.pathCompletion()
 
     ###*
     Add action for current option command.
