@@ -20,6 +20,12 @@ if complete &>/dev/null; then
                            {{cmd}} completion -- "${COMP_WORDS[@]}" \
                            2>/dev/null)) || return $?
     IFS="$si"
+
+    # Use readline's default filename completion
+    # if the compspec generates no matches
+    # See http://linux.about.com/library/cmd/blcmdl1_compgen.htm
+    # Ref https://github.com/veged/coa/issues/28
+    compopt -o default
   }
   complete -F _{{cmd}}_completion {{cmd}}
 elif compctl &>/dev/null; then
