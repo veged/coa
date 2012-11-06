@@ -161,7 +161,7 @@ exports.Cmd = class Cmd
         @cmd()
             .name('completion')
             .apply(require './completion')
-            .end()
+            .done()
 
     _exit: (msg, code) ->
         process.once 'exit', ->
