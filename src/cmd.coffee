@@ -161,7 +161,7 @@ exports.Cmd = class Cmd
         @cmd()
             .name('completion')
             .apply(require './completion')
-            .done()
+            .end()
 
     _exit: (msg, code) ->
         process.once 'exit', ->
@@ -342,7 +342,7 @@ exports.Cmd = class Cmd
                 @_exit res.stack ? res.toString(), res.exitCode ? code
             else
                 @_exit()
-        Q.when(@do(argv), cb(0), cb(1)).end()
+        Q.when(@do(argv), cb(0), cb(1)).done()
         @
 
     ###*
