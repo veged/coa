@@ -28,13 +28,16 @@ exports.pathCompletion = ->
 ###*
 Complete path on filesystem.
 @param {String} partial Partial path to complete.
-@param {String} prefix  Prefix of path to complete.
+@param {String} [prefix]  Prefix of path to complete.
 @param {String} [last]  Last component of path to complete
 @returns {Promise * String[]}  Completion result.
 ###
-completePath = exports.completePath = (partial, prefix, last) ->
+completePath = exports.completePath = (partial, prefix=partial, last) ->
     # TODO: use system-aware directory separator
+    # TODO: resolve ~ into user home dir
+    # TODO: ability to complete only on dirs
     Q.all(
+        # TODO: use `from` param or process.cwd() if empty
         QFS.list(PATH.join(process.cwd(), prefix))
 
             .then (res) ->
@@ -56,7 +59,7 @@ completePath = exports.completePath = (partial, prefix, last) ->
         )
         .then (res) ->
             if res.length == 1 and (d = res[0]) and d.match(/\/$/)
-                completePath(d, d)
+                completePath(d)
                     .then (res) ->
                         [d].concat(res)
             else
