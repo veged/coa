@@ -120,3 +120,13 @@ exports.Arg = class Arg
     @returns {COA.Cmd} parent command
     ###
     end: Cmd::end
+
+    ###*
+    Apply function with arguments in context of arg instance.
+    @param {Function} fn
+    @param {Array} args
+    @returns {COA.Arg} this instance (for chainability)
+    ###
+    apply: (fn, args...) ->
+        fn.apply this, args
+        @

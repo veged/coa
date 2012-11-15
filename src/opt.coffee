@@ -233,3 +233,13 @@ exports.Opt = class Opt
     @returns {COA.Cmd} parent command
     ###
     end: Cmd::end
+
+    ###*
+    Apply function with arguments in context of option instance.
+    @param {Function} fn
+    @param {Array} args
+    @returns {COA.Opt} this instance (for chainability)
+    ###
+    apply: (fn, args...) ->
+        fn.apply this, args
+        @
