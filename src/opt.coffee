@@ -240,6 +240,4 @@ exports.Opt = class Opt
     @param {Array} args
     @returns {COA.Opt} this instance (for chainability)
     ###
-    apply: (fn, args...) ->
-        fn.apply this, args
-        @
+    apply: Cmd::apply

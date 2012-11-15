@@ -127,6 +127,4 @@ exports.Arg = class Arg
     @param {Array} args
     @returns {COA.Arg} this instance (for chainability)
     ###
-    apply: (fn, args...) ->
-        fn.apply this, args
-        @
+    apply: Cmd::apply
