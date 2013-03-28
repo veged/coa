@@ -227,6 +227,11 @@ Default value passed through validation function as ordinary value.<br>
 **@param** *Object* `_def`<br>
 **@returns** *COA.Opt* `this` instance (for chainability)
 
+#### Opt.input
+Make option value inputting stream.
+It's add useful validation and shortcut for STDIN.
+**@returns** *{COA.Opt}* `this` instance (for chainability)
+
 #### Opt.output
 Make option value outputing stream.<br>
 It's add useful validation and shortcut for STDOUT.<br>
