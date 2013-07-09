@@ -22,7 +22,7 @@
     "q": "~0.9.6"
   },
   "devDependencies": {
-    "coffee-script": "~1.4.0",
+    "coffee-script": "~1.6.3",
     "istanbul": "~0.1.40",
     "mocha-as-promised": "*",
     "mocha-istanbul": "*",
