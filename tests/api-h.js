@@ -6,4 +6,4 @@ require('..').Cmd()
     .then(function(res) {
         console.log(res);
     })
-    .end(); // Q.end()
+    .done(); // Q.done()
