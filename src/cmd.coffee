@@ -52,8 +52,10 @@ exports.Cmd = class Cmd
         @_api
 
     _parent: (cmd) ->
-        if cmd then cmd._cmds.push @
         @_cmd = cmd or this
+        if cmd
+            cmd._cmds.push @
+            if @_name then @_cmd._cmdsByName[@_name] = @
         @
 
     ###*
@@ -233,8 +235,24 @@ exports.Cmd = class Cmd
         while i = argv.shift()
             if not i.indexOf '-'
                 optSeen = true
-            if not optSeen and /^\w[\w-_]*$/.test(i) and cmd = @_cmdsByName[i]
-                return cmd._parseCmd argv, unparsed
+            if not optSeen and /^\w[\w-_]*$/.test(i)
+                cmd = @_cmdsByName[i]
+                if not cmd
+                    try
+                        cmdDesc = require(@_name + '-' + i)
+                    catch e
+
+                    if cmdDesc
+                        if typeof cmdDesc == 'function'
+                            @cmd().apply(cmdDesc).end()
+                        else if typeof cmdDesc == 'object'
+                            @cmd(cmdDesc)
+                        else
+                            throw new Error 'Error: Unsupported command declaration type, ' +
+                                'should be function or COA.Cmd() object'
+                        cmd = @_cmdsByName[i]
+                if cmd
+                    return cmd._parseCmd argv, unparsed
 
             unparsed.push i
 
