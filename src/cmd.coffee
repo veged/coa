@@ -245,7 +245,7 @@ exports.Cmd = class Cmd
                     c = @
                     loop
                         pkg = c._name + '-' + pkg
-                        if c._cmd == c then break
+                        if c._cmd is c then break
                         c = c._cmd
 
                     try
