@@ -415,37 +415,74 @@ describe('Cmd', function() {
 
     describe('External subcommand', function() {
 
-        describe('when described as a function', function() {
-            var cmd = COA.Cmd()
-                .name('coa');
+        describe('default scheme: cmd.extendable()', function() {
 
-            it('should be invoked and accept passed opts and args', function() {
-                return cmd.do(['test', '--opt', 'value', 'value', 'value 1', 'value 2'])
-                    .then(doTest);
+            describe('when described as a function', function() {
+                var cmd = COA.Cmd()
+                    .name('coa')
+                    .extendable();
+
+                it('should be invoked and accept passed opts and args', function() {
+                    return cmd.do(['test', '--opt', 'value', 'value', 'value 1', 'value 2'])
+                        .then(doTest);
+                });
             });
+
+            describe('when described as an COA.Cmd() object', function() {
+                var cmd = COA.Cmd()
+                    .name('coa')
+                    .extendable();
+
+                it('should be invoked and accept passed opts and args', function() {
+                    return cmd.do(['test-obj', '--opt', 'value', 'value', 'value 1', 'value 2'])
+                        .then(doTest);
+                });
+            });
+
+            describe('2nd level subcommand', function() {
+                var cmd = COA.Cmd()
+                    .name('coa')
+                    .cmd()
+                    .name('test')
+                    .extendable()
+                    .end();
+
+                it('should be invoked and accept passed opts and args', function() {
+                    return cmd.do(['test', 'obj', '--opt', 'value', 'value', 'value 1', 'value 2'])
+                        .then(doTest);
+                });
+            });
+
         });
 
-        describe('when described as an COA.Cmd() object', function() {
-            var cmd = COA.Cmd()
-                .name('coa');
+        describe("common prefix: cmd.extendable('coa-')", function() {
 
-            it('should be invoked and accept passed opts and args', function() {
-                return cmd.do(['test-obj', '--opt', 'value', 'value', 'value 1', 'value 2'])
-                    .then(doTest);
+            describe('when described as a function', function() {
+                var cmd = COA.Cmd()
+                    .name('coa')
+                    .extendable('coa-');
+
+                it('should be invoked and accept passed opts and args', function() {
+                    return cmd.do(['test', '--opt', 'value', 'value', 'value 1', 'value 2'])
+                        .then(doTest);
+                });
             });
+
         });
 
-        describe('2nd level subcommand', function() {
-            var cmd = COA.Cmd()
-                .name('coa')
-                .cmd()
-                .name('test')
-                .end();
+        describe("format string: cmd.extendable('coa-%s')", function() {
 
-            it('should be invoked and accept passed opts and args', function() {
-                return cmd.do(['test', 'obj', '--opt', 'value', 'value', 'value 1', 'value 2'])
-                    .then(doTest);
+            describe('when described as a function', function() {
+                var cmd = COA.Cmd()
+                    .name('coa')
+                    .extendable('coa-%s');
+
+                it('should be invoked and accept passed opts and args', function() {
+                    return cmd.do(['test', '--opt', 'value', 'value', 'value 1', 'value 2'])
+                        .then(doTest);
+                });
             });
+
         });
 
     });

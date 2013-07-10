@@ -32,6 +32,8 @@ exports.Cmd = class Cmd
 
         @_args = []
 
+        @_ext = false
+
     @get: (propertyName, func) ->
         Object.defineProperty @::, propertyName,
             configurable: true
@@ -165,6 +167,15 @@ exports.Cmd = class Cmd
             .apply(require './completion')
             .end()
 
+    ###*
+    Allow command to be extendable by external node.js modules.
+    @param {String} [pattern]  Pattern of node.js module to find subcommands at.
+    @returns {COA.Cmd} this instance (for chainability)
+    ###
+    extendable: (pattern) ->
+        @_ext = pattern or true
+        @
+
     _exit: (msg, code) ->
         process.once 'exit', ->
             if msg then UTIL.error msg
@@ -237,19 +248,27 @@ exports.Cmd = class Cmd
                 optSeen = true
             if not optSeen and /^\w[\w-_]*$/.test(i)
                 cmd = @_cmdsByName[i]
-                if not cmd
 
+                if not cmd and @_ext
                     # construct package name to require
-                    # <command>-<subcommand>-<subcommand> and so on
-                    pkg = ''
-                    c = @
-                    loop
-                        pkg = c._name + '-' + pkg
-                        if c._cmd is c then break
-                        c = c._cmd
+                    if typeof @_ext is 'string'
+                        if ~@_ext.indexOf('%s')
+                            # use formatted string
+                            pkg = UTIL.format(@_ext, i)
+                        else
+                            # just append subcommand name to the prefix
+                            pkg = @_ext + i
+                    else if @_ext is true
+                        # use default scheme: <command>-<subcommand>-<subcommand> and so on
+                        pkg = i
+                        c = @
+                        loop
+                            pkg = c._name + '-' + pkg
+                            if c._cmd is c then break
+                            c = c._cmd
 
                     try
-                        cmdDesc = require(pkg + i)
+                        cmdDesc = require(pkg)
                     catch e
 
                     if cmdDesc
