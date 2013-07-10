@@ -244,9 +244,16 @@ exports.Cmd = class Cmd
 
                     if cmdDesc
                         if typeof cmdDesc == 'function'
-                            @cmd().apply(cmdDesc).end()
+                            # set create subcommand, set its name and apply imported function
+                            @cmd()
+                                .name(i)
+                                .apply(cmdDesc)
+                                .end()
                         else if typeof cmdDesc == 'object'
+                            # register subcommand
                             @cmd(cmdDesc)
+                            # set command name
+                            cmdDesc.name(i)
                         else
                             throw new Error 'Error: Unsupported command declaration type, ' +
                                 'should be function or COA.Cmd() object'
