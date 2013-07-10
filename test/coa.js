@@ -435,6 +435,19 @@ describe('Cmd', function() {
             });
         });
 
+        describe('2nd level subcommand', function() {
+            var cmd = COA.Cmd()
+                .name('coa')
+                .cmd()
+                .name('test')
+                .end();
+
+            it('should be invoked and accept passed opts and args', function() {
+                return cmd.do(['test', 'obj', '--opt', 'value', 'value', 'value 1', 'value 2'])
+                    .then(doTest);
+            });
+        });
+
     });
 
     it('helpful(), name(), title()');

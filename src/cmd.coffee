@@ -238,8 +238,18 @@ exports.Cmd = class Cmd
             if not optSeen and /^\w[\w-_]*$/.test(i)
                 cmd = @_cmdsByName[i]
                 if not cmd
+
+                    # construct package name to require
+                    # <command>-<subcommand>-<subcommand> and so on
+                    pkg = ''
+                    c = @
+                    loop
+                        pkg = c._name + '-' + pkg
+                        if c._cmd == c then break
+                        c = c._cmd
+
                     try
-                        cmdDesc = require(@_name + '-' + i)
+                        cmdDesc = require(pkg + i)
                     catch e
 
                     if cmdDesc
