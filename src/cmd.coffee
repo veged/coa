@@ -32,6 +32,8 @@ exports.Cmd = class Cmd
 
         @_args = []
 
+        @_ext = false
+
     @get: (propertyName, func) ->
         Object.defineProperty @::, propertyName,
             configurable: true
@@ -52,8 +54,10 @@ exports.Cmd = class Cmd
         @_api
 
     _parent: (cmd) ->
-        if cmd then cmd._cmds.push @
         @_cmd = cmd or this
+        if cmd
+            cmd._cmds.push @
+            if @_name then @_cmd._cmdsByName[@_name] = @
         @
 
     ###*
@@ -163,6 +167,15 @@ exports.Cmd = class Cmd
             .apply(require './completion')
             .end()
 
+    ###*
+    Allow command to be extendable by external node.js modules.
+    @param {String} [pattern]  Pattern of node.js module to find subcommands at.
+    @returns {COA.Cmd} this instance (for chainability)
+    ###
+    extendable: (pattern) ->
+        @_ext = pattern or true
+        @
+
     _exit: (msg, code) ->
         process.once 'exit', ->
             if msg then UTIL.error msg
@@ -233,8 +246,49 @@ exports.Cmd = class Cmd
         while i = argv.shift()
             if not i.indexOf '-'
                 optSeen = true
-            if not optSeen and /^\w[\w-_]*$/.test(i) and cmd = @_cmdsByName[i]
-                return cmd._parseCmd argv, unparsed
+            if not optSeen and /^\w[\w-_]*$/.test(i)
+                cmd = @_cmdsByName[i]
+
+                if not cmd and @_ext
+                    # construct package name to require
+                    if typeof @_ext is 'string'
+                        if ~@_ext.indexOf('%s')
+                            # use formatted string
+                            pkg = UTIL.format(@_ext, i)
+                        else
+                            # just append subcommand name to the prefix
+                            pkg = @_ext + i
+                    else if @_ext is true
+                        # use default scheme: <command>-<subcommand>-<subcommand> and so on
+                        pkg = i
+                        c = @
+                        loop
+                            pkg = c._name + '-' + pkg
+                            if c._cmd is c then break
+                            c = c._cmd
+
+                    try
+                        cmdDesc = require(pkg)
+                    catch e
+
+                    if cmdDesc
+                        if typeof cmdDesc == 'function'
+                            # set create subcommand, set its name and apply imported function
+                            @cmd()
+                                .name(i)
+                                .apply(cmdDesc)
+                                .end()
+                        else if typeof cmdDesc == 'object'
+                            # register subcommand
+                            @cmd(cmdDesc)
+                            # set command name
+                            cmdDesc.name(i)
+                        else
+                            throw new Error 'Error: Unsupported command declaration type, ' +
+                                'should be function or COA.Cmd() object'
+                        cmd = @_cmdsByName[i]
+                if cmd
+                    return cmd._parseCmd argv, unparsed
 
             unparsed.push i
 

@@ -338,6 +338,22 @@ describe('Arg', function() {
 
 describe('Cmd', function() {
 
+    var doTest = function(o) {
+            assert.deepEqual(o, {
+                opts: { opt: 'value' },
+                args: {
+                    arg1: 'value',
+                    arg2: ['value 1', 'value 2']
+                }
+            });
+        },
+
+        invokeOpts = { opt: 'value' },
+        invokeArgs = {
+            arg1: 'value',
+            arg2:  ['value 1', 'value 2']
+        };
+
     describe('Subcommand', function() {
 
         var cmd = COA.Cmd()
@@ -357,23 +373,7 @@ describe('Cmd', function() {
                 .act(function(opts, args) {
                     return { opts: opts, args: args };
                 })
-                .end(),
-
-            doTest = function(o) {
-                    assert.deepEqual(o, {
-                        opts: { opt: 'value' },
-                        args: {
-                            arg1: 'value',
-                            arg2: ['value 1', 'value 2']
-                        }
-                    });
-                },
-
-            invokeOpts = { opt: 'value' },
-            invokeArgs = {
-                    arg1: 'value',
-                    arg2:  ['value 1', 'value 2']
-                };
+                .end();
 
         describe('when specified on command line', function() {
 
@@ -407,6 +407,80 @@ describe('Cmd', function() {
             it('should fail', function() {
                 return cmd.invoke('unexistent')
                     .then(assert.fail, emptyFn);
+            });
+
+        });
+
+    });
+
+    describe('External subcommand', function() {
+
+        describe('default scheme: cmd.extendable()', function() {
+
+            describe('when described as a function', function() {
+                var cmd = COA.Cmd()
+                    .name('coa')
+                    .extendable();
+
+                it('should be invoked and accept passed opts and args', function() {
+                    return cmd.do(['test', '--opt', 'value', 'value', 'value 1', 'value 2'])
+                        .then(doTest);
+                });
+            });
+
+            describe('when described as an COA.Cmd() object', function() {
+                var cmd = COA.Cmd()
+                    .name('coa')
+                    .extendable();
+
+                it('should be invoked and accept passed opts and args', function() {
+                    return cmd.do(['test-obj', '--opt', 'value', 'value', 'value 1', 'value 2'])
+                        .then(doTest);
+                });
+            });
+
+            describe('2nd level subcommand', function() {
+                var cmd = COA.Cmd()
+                    .name('coa')
+                    .cmd()
+                    .name('test')
+                    .extendable()
+                    .end();
+
+                it('should be invoked and accept passed opts and args', function() {
+                    return cmd.do(['test', 'obj', '--opt', 'value', 'value', 'value 1', 'value 2'])
+                        .then(doTest);
+                });
+            });
+
+        });
+
+        describe("common prefix: cmd.extendable('coa-')", function() {
+
+            describe('when described as a function', function() {
+                var cmd = COA.Cmd()
+                    .name('coa')
+                    .extendable('coa-');
+
+                it('should be invoked and accept passed opts and args', function() {
+                    return cmd.do(['test', '--opt', 'value', 'value', 'value 1', 'value 2'])
+                        .then(doTest);
+                });
+            });
+
+        });
+
+        describe("format string: cmd.extendable('coa-%s')", function() {
+
+            describe('when described as a function', function() {
+                var cmd = COA.Cmd()
+                    .name('coa')
+                    .extendable('coa-%s');
+
+                it('should be invoked and accept passed opts and args', function() {
+                    return cmd.do(['test', '--opt', 'value', 'value', 'value 1', 'value 2'])
+                        .then(doTest);
+                });
             });
 
         });
