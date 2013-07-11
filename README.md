@@ -9,6 +9,7 @@ Once you write definition in terms of commands, options and arguments you automa
 * Command line help text
 * Program API for use COA-based programs as modules
 * Shell completion
+* Subcommand extendibility by external node modules
 
 ### Other features
 
@@ -19,6 +20,8 @@ Once you write definition in terms of commands, options and arguments you automa
 
 ### TODO
 
+* --Subcommand extendibility--
+* Shell completion helpers
 * Localization
 * Shell-mode
 * Configs
@@ -44,14 +47,22 @@ require('coa').Cmd() // main (top level) command declaration
                 .version;
         })
         .end() // end option chain and return to main command
-    .cmd().name('subcommand').apply(require('./subcommand').COA).end() // load subcommand from module
+    .cmd()
+        .name('subcommand')
+        .apply(require('./subcommand')) // load subcommand from module
+        .end()
     .cmd() // inplace subcommand declaration
-        .name('othercommand').title('Awesome other subcommand').helpful()
+        .name('othercommand')
+        .title('Awesome other subcommand')
+        .helpful()
         .opt()
-            .name('input').title('input file, required')
-            .short('i').long('input')
+            .name('input')
+            .title('input file, required')
+            .short('i')
+            .long('input')
             .val(function(v) { // validator function, also for translate simple values
-                return require('fs').createReadStream(v) })
+                return require('fs').createReadStream(v);
+            })
             .req() // make option required
             .end() // end option chain and return to command
         .end() // end subcommand chain and return to parent command
@@ -60,12 +71,14 @@ require('coa').Cmd() // main (top level) command declaration
 
 ````javascript
 // subcommand.js
-exports.COA = function() {
+module.exports = function() {
     this
         .title('Awesome subcommand').helpful()
         .opt()
-            .name('output').title('output file')
-            .short('o').long('output')
+            .name('output')
+            .title('output file')
+            .short('o')
+            .long('output')
             .output() // use default preset for "output" option declaration
             .end()
 };
@@ -138,6 +151,16 @@ Make command "helpful", i.e. add -h --help flags for print usage.<br>
 #### Cmd.completable
 Adds shell completion to command, adds "completion" subcommand, that makes all the magic.<br>
 Must be called only on root command.<br>
+**@returns** *COA.Cmd* `this` instance (for chainability)
+
+#### Cmd.extendable
+Adds ability to extend command by external node modules.<br>
+**@param** *String* `[pattern]` Pattern of modules names to search.
+    Should be simple string with `%s` placeholder like `coa-program-%s-subcommand`
+    or without it — it will be treated as module name prefix then. E.g. `coa-program-`.<br>
+    Node module should export function or `Cmd` object. Function will be passed
+    to `Cmd.apply()` method of created subcommand object using `Cmd.cmd()` method. And
+    `Cmd` object will be passed to `Cmd.cmd()` method.
 **@returns** *COA.Cmd* `this` instance (for chainability)
 
 #### Cmd.usage
