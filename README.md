@@ -9,6 +9,7 @@ Once you write definition in terms of commands, options and arguments you automa
 * Command line help text
 * Program API for use COA-based programs as modules
 * Shell completion
+* Subcommand extendibility by external node modules
 
 ### Other features
 
@@ -19,6 +20,8 @@ Once you write definition in terms of commands, options and arguments you automa
 
 ### TODO
 
+* --Subcommand extendibility--
+* Shell completion helpers
 * Localization
 * Shell-mode
 * Configs
@@ -148,6 +151,16 @@ Make command "helpful", i.e. add -h --help flags for print usage.<br>
 #### Cmd.completable
 Adds shell completion to command, adds "completion" subcommand, that makes all the magic.<br>
 Must be called only on root command.<br>
+**@returns** *COA.Cmd* `this` instance (for chainability)
+
+#### Cmd.extendable
+Adds ability to extend command by external node modules.<br>
+**@param** *String* `[pattern]` Pattern of modules names to search.
+    Should be simple string with `%s` placeholder like `coa-program-%s-subcommand`
+    or without it — it will be treated as module name prefix then. E.g. `coa-program-`.<br>
+    Node module should export function or `Cmd` object. Function will be passed
+    to `Cmd.apply()` method of created subcommand object using `Cmd.cmd()` method. And
+    `Cmd` object will be passed to `Cmd.cmd()` method.
 **@returns** *COA.Cmd* `this` instance (for chainability)
 
 #### Cmd.usage
