@@ -44,14 +44,22 @@ require('coa').Cmd() // main (top level) command declaration
                 .version;
         })
         .end() // end option chain and return to main command
-    .cmd().name('subcommand').apply(require('./subcommand').COA).end() // load subcommand from module
+    .cmd()
+        .name('subcommand')
+        .apply(require('./subcommand')) // load subcommand from module
+        .end()
     .cmd() // inplace subcommand declaration
-        .name('othercommand').title('Awesome other subcommand').helpful()
+        .name('othercommand')
+        .title('Awesome other subcommand')
+        .helpful()
         .opt()
-            .name('input').title('input file, required')
-            .short('i').long('input')
+            .name('input')
+            .title('input file, required')
+            .short('i')
+            .long('input')
             .val(function(v) { // validator function, also for translate simple values
-                return require('fs').createReadStream(v) })
+                return require('fs').createReadStream(v);
+            })
             .req() // make option required
             .end() // end option chain and return to command
         .end() // end subcommand chain and return to parent command
@@ -60,12 +68,14 @@ require('coa').Cmd() // main (top level) command declaration
 
 ````javascript
 // subcommand.js
-exports.COA = function() {
+module.exports = function() {
     this
         .title('Awesome subcommand').helpful()
         .opt()
-            .name('output').title('output file')
-            .short('o').long('output')
+            .name('output')
+            .title('output file')
+            .short('o')
+            .long('output')
             .output() // use default preset for "output" option declaration
             .end()
 };
