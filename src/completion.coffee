@@ -137,15 +137,17 @@ complete = (cmd, opts) ->
     # complete on opt values: completion
     if optWord and opt = cmd._optsByKey[optWord]
         if not opt._flag and opt._comp
-            compls = Q.join compls, Q.when opt._comp(opts), (c, o) ->
-                c.concat o.map (v) -> (optPrefix or '') + v
+            compls = Q.all([compls, opt._comp(opts)])
+                .spread (c, o) ->
+                    c.concat o.map (v) -> (optPrefix or '') + v
 
     # TODO: complete on args values (context aware, custom completion?)
 
     # custom completion on cmds
     if cmd._comp
-        compls = Q.join compls, Q.when(cmd._comp(opts)), (c, o) ->
-            c.concat o
+        compls = Q.all([compls, cmd._comp(opts)])
+            .spread (c, o) ->
+                c.concat o
 
     # TODO: context aware custom completion on cmds, opts and args
     # (can depend on already entered values, especially options)
