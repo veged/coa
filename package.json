@@ -24,9 +24,8 @@
   "devDependencies": {
     "coffee-script": "~1.6.3",
     "istanbul": "~0.1.40",
-    "mocha-as-promised": "*",
     "mocha-istanbul": "*",
-    "mocha": "~1.12.0",
+    "mocha": "~1.21.4",
     "chai": "~1.7.2"
   },
   "scripts": {
