@@ -168,6 +168,13 @@ exports.Cmd = class Cmd
             .end()
 
     ###*
+    Forces command to act as repl (read-eval-print loop).
+    @returns {COA.Cmd} this instance (for chainability)
+    ###
+    repl: (opts) ->
+        @apply require('./repl'), opts
+
+    ###*
     Allow command to be extendable by external node.js modules.
     @param {String} [pattern]  Pattern of node.js module to find subcommands at.
     @returns {COA.Cmd} this instance (for chainability)
