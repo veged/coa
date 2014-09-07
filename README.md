@@ -129,6 +129,11 @@ Add (or set) action for current command.<br>
 **@param** *{Boolean}* [force=false] flag for set action instead add to existings<br>
 **@returns** *COA.Cmd* `this` instance (for chainability)
 
+#### Cmd.repl
+Binds repl functionality to the current cmd<br>
+**@param** *Object* `opts` repl configuration<br>
+**@returns** *COA.Cmd* `this` instance (for chainability)
+
 #### Cmd.apply
 Apply function with arguments in context of command instance.<br>
 **@param** *Function* `fn`<br>
