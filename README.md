@@ -308,7 +308,7 @@ Make argument value outputing stream.<br>
 It's add useful validation and shortcut for STDOUT.<br>
 **@returns** *COA.Arg* `this` instance (for chainability)
 
-#### Opt.comp
+#### Arg.comp
 Set custom additional completion for current argument.<br>
 **@param** *Function* `fn` completion generation function,
     invoked in the context of command instance.
