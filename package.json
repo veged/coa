@@ -19,7 +19,7 @@
     "lib": "./lib"
   },
   "dependencies": {
-    "q": "~0.9.6"
+    "q": "^1.1.2"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",
