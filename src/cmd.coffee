@@ -178,7 +178,7 @@ exports.Cmd = class Cmd
 
     _exit: (msg, code) ->
         process.once 'exit', ->
-            if msg then UTIL.error msg
+            if msg then console.error msg
             process.exit code or 0
 
     ###*
