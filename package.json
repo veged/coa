@@ -11,6 +11,11 @@
   "contributors": [
     "Sergey Belov <peimei@ya.ru> (http://github.com/arikon)"
   ],
+  "files": [
+    "lib/",
+    "index.js",
+    "README.ru.md"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/veged/coa.git"
