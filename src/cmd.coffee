@@ -246,7 +246,7 @@ exports.Cmd = class Cmd
         while i = argv.shift()
             if not i.indexOf '-'
                 optSeen = true
-            if not optSeen and /^\w[\w-_]*$/.test(i)
+            if not optSeen and /^\w[\w-_:]*$/.test(i)
                 cmd = @_cmdsByName[i]
 
                 if not cmd and @_ext
