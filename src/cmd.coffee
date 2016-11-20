@@ -202,13 +202,13 @@ exports.Cmd = class Cmd
             '[options]',
             '[<args>...]'].join ' ')
 
-        if @_usages(@_cmds, 'Commands').length
+        if @_usages(@_cmds, 'Commands')
             res.push(@_usages(@_cmds, 'Commands'))
 
-        if @_usages(@_args, 'Arguments').length
+        if @_usages(@_args, 'Arguments')
             res.push(@_usages(@_args, 'Arguments'))
 
-        if @_usages(@_opts, 'Options').length
+        if @_usages(@_opts, 'Options')
             res.push(@_usages(@_opts, 'Options'))
 
         res.join '\n'
