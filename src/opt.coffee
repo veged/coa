@@ -1,6 +1,5 @@
 fs = require 'fs'
 Q = require 'q'
-Color = require('./color').Color
 Cmd = require('./cmd').Cmd
 
 ###*
@@ -202,17 +201,17 @@ exports.Opt = class Opt
         nameStr = @_name.toUpperCase()
 
         if @_short
-            res.push '-', Color 'lgreen', @_short
+            res.push '-', @_short
             unless @_flag then res.push ' ' + nameStr
             res.push ', '
 
         if @_long
-            res.push '--', Color 'green', @_long
+            res.push '--', @_long
             unless @_flag then res.push '=' + nameStr
 
         res.push ' : ', @_title
 
-        if @_req then res.push ' ', Color('lred', '(required)')
+        if @_req then res.push ' ', '(required)'
 
         res.join ''
 

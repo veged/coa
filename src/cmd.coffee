@@ -1,6 +1,5 @@
 UTIL = require 'util'
 PATH = require 'path'
-Color = require('./color').Color
 Q = require('q')
 
 #inspect = require('eyes').inspector { maxLength: 99999, stream: process.stderr }
@@ -193,25 +192,25 @@ exports.Cmd = class Cmd
         res.push('', 'Usage:')
 
         if @_cmds.length then res.push(['', '',
-            Color('lred', @_fullName()),
-            Color('lblue', 'COMMAND'),
-            Color('lgreen', '[OPTIONS]'),
-            Color('lpurple', '[ARGS]')].join ' ')
+            @_fullName(),
+            '<command>',
+            '[options]',
+            '[<args>...]'].join ' ')
 
         if @_opts.length + @_args.length then res.push(['', '',
-            Color('lred', @_fullName()),
-            Color('lgreen', '[OPTIONS]'),
-            Color('lpurple', '[ARGS]')].join ' ')
+            @_fullName(),
+            '[options]',
+            '[<args>...]'].join ' ')
 
         res.push(
             @_usages(@_cmds, 'Commands'),
-            @_usages(@_opts, 'Options'),
             @_usages(@_args, 'Arguments'))
+            @_usages(@_opts, 'Options'),
 
         res.join '\n'
 
     _usage: ->
-        Color('lblue', @_name) + ' : ' + @_title
+        @_name + ' : ' + @_title
 
     _usages: (os, title) ->
         unless os.length then return
