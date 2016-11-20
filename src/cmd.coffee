@@ -204,8 +204,8 @@ exports.Cmd = class Cmd
 
         res.push(
             @_usages(@_cmds, 'Commands'),
-            @_usages(@_args, 'Arguments'))
-            @_usages(@_opts, 'Options'),
+            @_usages(@_args, 'Arguments'),
+            @_usages(@_opts, 'Options'))
 
         res.join '\n'
 
