@@ -198,7 +198,7 @@ exports.Opt = class Opt
 
     _usage: ->
         res = []
-        nameStr = @_name.toUpperCase()
+        nameStr = '<' + @_name + '>'
 
         if @_short
             res.push '-', @_short

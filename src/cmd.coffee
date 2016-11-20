@@ -187,7 +187,7 @@ exports.Cmd = class Cmd
     usage: ->
         res = []
 
-        if @_title then res.push @_fullTitle()
+        if @_title then res.push @_title
 
         res.push('', 'Usage:')
 
@@ -202,10 +202,14 @@ exports.Cmd = class Cmd
             '[options]',
             '[<args>...]'].join ' ')
 
-        res.push(
-            @_usages(@_cmds, 'Commands'),
-            @_usages(@_args, 'Arguments'),
-            @_usages(@_opts, 'Options'))
+        if @_usages(@_cmds, 'Commands').length
+            res.push(@_usages(@_cmds, 'Commands'))
+
+        if @_usages(@_args, 'Arguments').length
+            res.push(@_usages(@_args, 'Arguments'))
+
+        if @_usages(@_opts, 'Options').length
+            res.push(@_usages(@_opts, 'Options'))
 
         res.join '\n'
 
