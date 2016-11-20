@@ -144,14 +144,14 @@ exports.Cmd = class Cmd
     Make command "helpful", i.e. add -h --help flags for print usage.
     @returns {COA.Cmd} this instance (for chainability)
     ###
-    helpful: ->
+    helpful: (cb) ->
         @opt()
             .name('help').title('Help')
             .short('h').long('help')
             .flag()
             .only()
             .act ->
-                return @usage()
+                return if cb then cb() else @usage()
             .end()
 
     ###*
