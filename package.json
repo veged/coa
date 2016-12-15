@@ -1,7 +1,7 @@
 {
   "name": "coa",
   "description": "Command-Option-Argument: Yet another parser for command line options.",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "homepage": "http://github.com/veged/coa",
   "author": "Sergey Berezhnoy <veged@ya.ru> (http://github.com/veged)",
   "maintainers": [
@@ -34,7 +34,7 @@
     "chai": "~1.7.2"
   },
   "scripts": {
-    "postinstall": "make",
+    "postinstall": "make all",
     "test": "make test",
     "coverage": "make coverage"
   },
