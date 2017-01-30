@@ -5,9 +5,6 @@ all: lib
 
 lib: $(foreach s,$(wildcard src/*.coffee),$(patsubst src/%.coffee,lib/%.js,$s))
 
-lib-cov: clean-coverage lib
-	$(BIN)/istanbul instrument --output lib-cov --no-compact --variable global.__coverage__ lib
-
 lib/%.js: src/%.coffee
 	$(BIN)/coffee -cb -o $(@D) $<
 
@@ -16,10 +13,10 @@ test: lib
 	$(BIN)/mocha
 
 .PHONY: coverage
-coverage: lib-cov
-	COVER=1 $(BIN)/mocha --reporter mocha-istanbul
+coverage:
+	$(BIN)/nyc --reporter=text --reporter=html $(BIN)/mocha
 	@echo
-	@echo Open html-report/index.html file in your browser
+	@echo Open coverage/index.html file in your browser
 
 .PHONY: watch
 watch:
@@ -30,5 +27,4 @@ clean: clean-coverage
 
 .PHONY: clean-coverage
 clean-coverage:
-	-rm -rf lib-cov
-	-rm -rf html-report
+	-rm -rf .nyc_output coverage

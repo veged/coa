@@ -2,5 +2,5 @@
 *.iml
 node_modules/
 !node_modules/coa*.js
-lib-cov/
-html-report/
+coverage/
+.nyc_output/
