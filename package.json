@@ -39,7 +39,7 @@
     "coverage": "make coverage"
   },
   "engines": {
-    "node": ">= 0.8.0"
+    "node": ">= 4.0"
   },
   "license": "MIT"
 }
