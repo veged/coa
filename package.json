@@ -34,7 +34,8 @@
     "nyc": "^10.1.2"
   },
   "scripts": {
-    "lint": "eslint test",
+    "lint": "eslint .",
+    "pretest": "npm run lint",
     "test": "make test",
     "coverage": "make coverage"
   },
