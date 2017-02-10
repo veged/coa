@@ -42,7 +42,7 @@ describe('Opt', function() {
         it('should return passed values', function() {
             return cmd.do(['-a', 'a', '-b', 'b'])
                 .then(function(res) {
-                    assert.deepEqual(res, { a: 'a', b: 'b' });
+                    assert.deepEqual(res, { a : 'a', b : 'b' });
                 });
         });
 
@@ -66,7 +66,7 @@ describe('Opt', function() {
         it('should return passed values', function() {
             return cmd.do(['--long1', 'long value', '--long2=another long value'])
                 .then(function(res) {
-                    assert.deepEqual(res, { long1: 'long value', long2: 'another long value' });
+                    assert.deepEqual(res, { long1 : 'long value', long2 : 'another long value' });
                 });
         });
 
@@ -87,7 +87,7 @@ describe('Opt', function() {
         it('should return array of passed values', function() {
             return cmd.do(['-a', '1', '-a', '2'])
                 .then(function(res) {
-                    assert.deepEqual(res, { a: ['1', '2'] });
+                    assert.deepEqual(res, { a : ['1', '2'] });
                 });
         });
 
@@ -154,8 +154,8 @@ describe('Opt', function() {
                 .name('a')
                 .short('a')
                 .val(function(v) {
-                    if (v === 'invalid') return this.reject('fail');
-                    return { value: v };
+                    if(v === 'invalid') return this.reject('fail');
+                    return { value : v };
                 })
                 .end()
             .act(function(opts) {
@@ -170,7 +170,7 @@ describe('Opt', function() {
         it('should return transformed value', function() {
             return cmd.do(['-a', 'test'])
                 .then(function(opts) {
-                    assert.deepEqual(opts.a, { value: 'test' });
+                    assert.deepEqual(opts.a, { value : 'test' });
                 });
         });
 
@@ -250,7 +250,7 @@ describe('Arg', function() {
         it('should return array of passed values', function() {
             return cmd.do(['value 1', 'value 2'])
                 .then(function(args) {
-                    assert.deepEqual(args, { a: ['value 1', 'value 2'] });
+                    assert.deepEqual(args, { a : ['value 1', 'value 2'] });
                 });
         });
 
@@ -296,17 +296,17 @@ describe('Arg', function() {
                 .arr()
                 .end()
             .act(function(opts, args) {
-                return { opts: opts, args: args };
+                return { opts : opts, args : args };
             });
 
         it('should return passed values', function() {
             return cmd.do(['--opt', 'value', 'value', 'value 1', 'value 2'])
                 .then(function(o) {
                     assert.deepEqual(o, {
-                        opts: { opt: 'value' },
-                        args: {
-                            arg1: 'value',
-                            arg2: ['value 1', 'value 2']
+                        opts : { opt : 'value' },
+                        args : {
+                            arg1 : 'value',
+                            arg2 : ['value 1', 'value 2']
                         }
                     });
                 });
@@ -328,7 +328,7 @@ describe('Arg', function() {
         it('should return passed arg values', function() {
             return cmd.do(['--', 'raw', 'arg', 'values'])
                 .then(function(args) {
-                    assert.deepEqual(args, { raw: ['raw', 'arg', 'values'] });
+                    assert.deepEqual(args, { raw : ['raw', 'arg', 'values'] });
                 });
         });
 
@@ -340,18 +340,18 @@ describe('Cmd', function() {
 
     var doTest = function(o) {
             assert.deepEqual(o, {
-                opts: { opt: 'value' },
-                args: {
-                    arg1: 'value',
-                    arg2: ['value 1', 'value 2']
+                opts : { opt : 'value' },
+                args : {
+                    arg1 : 'value',
+                    arg2 : ['value 1', 'value 2']
                 }
             });
         },
 
-        invokeOpts = { opt: 'value' },
+        invokeOpts = { opt : 'value' },
         invokeArgs = {
-            arg1: 'value',
-            arg2:  ['value 1', 'value 2']
+            arg1 : 'value',
+            arg2 : ['value 1', 'value 2']
         };
 
     describe('Subcommand', function() {
@@ -371,7 +371,7 @@ describe('Cmd', function() {
                     .arr()
                     .end()
                 .act(function(opts, args) {
-                    return { opts: opts, args: args };
+                    return { opts : opts, args : args };
                 })
                 .end();
 
