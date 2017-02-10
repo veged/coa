@@ -27,11 +27,10 @@
     "q": "^1.1.2"
   },
   "devDependencies": {
+    "chai": "~1.7.2",
     "coffee-script": "~1.6.3",
-    "istanbul": "~0.1.40",
-    "mocha-istanbul": "*",
     "mocha": "~1.21.4",
-    "chai": "~1.7.2"
+    "nyc": "^10.1.2"
   },
   "scripts": {
     "test": "make test",
@@ -40,6 +39,5 @@
   "engines": {
     "node": ">= 0.8.0"
   },
-  "license": "MIT",
-  "optionalDependencies": {}
+  "license": "MIT"
 }
