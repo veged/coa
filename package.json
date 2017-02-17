@@ -34,10 +34,11 @@
     "nyc": "^10.1.2"
   },
   "scripts": {
+    "clean": "rm -r .nyc_output coverage",
+    "coverage": "nyc --reporter=text --reporter=html mocha; echo; echo 'Open coverage/index.html file in your browser'",
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "test": "make test",
-    "coverage": "make coverage"
+    "test": "nyc mocha"
   },
   "engines": {
     "node": ">= 4.0"
