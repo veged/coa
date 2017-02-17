@@ -28,16 +28,19 @@
   },
   "devDependencies": {
     "chai": "~1.7.2",
+    "coveralls": "^2.11.16",
     "eslint": "^3.15.0",
     "eslint-config-pedant": "^0.8.0",
     "mocha": "~1.21.4",
     "nyc": "^10.1.2"
   },
   "scripts": {
+    "clean": "rm -r .nyc_output coverage",
+    "coverage": "nyc --reporter=text --reporter=html mocha; echo; echo 'Open coverage/index.html file in your browser'",
+    "coveralls": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "test": "make test",
-    "coverage": "make coverage"
+    "test": "nyc mocha"
   },
   "engines": {
     "node": ">= 4.0"

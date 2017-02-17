@@ -6,4 +6,8 @@ matrix:
   include:
     - node_js: "4"
     - node_js: "6"
+      env: COVERALLS=1
     - node_js: "7"
+
+after_success:
+  - if [ "x$COVERALLS" = "x1" ]; then npm run coveralls; fi
