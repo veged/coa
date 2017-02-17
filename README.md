@@ -1,5 +1,20 @@
 # Command-Option-Argument
-[![build status](https://secure.travis-ci.org/veged/coa.png)](http://travis-ci.org/veged/coa)
+
+Yet another parser for command line options.
+
+[![NPM Status][npm-img]][npm]
+[![Travis Status][test-img]][travis]
+[![Coverage Status][coverage-img]][coveralls]
+[![Dependency Status][dependency-img]][david]
+
+[npm]:          https://www.npmjs.org/package/coa
+[npm-img]:      https://img.shields.io/npm/v/coa.svg
+[travis]:       https://travis-ci.org/veged/coa
+[test-img]:     https://img.shields.io/travis/veged/coa.svg
+[coveralls]:    https://coveralls.io/r/veged/coa
+[coverage-img]: https://img.shields.io/coveralls/veged/coa.svg
+[david]:          https://david-dm.org/veged/coa
+[dependency-img]: http://img.shields.io/david/veged/coa.svg
 
 ## What is it?
 
