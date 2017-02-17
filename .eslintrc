@@ -35,8 +35,10 @@
             }
         }],
         "array-bracket-spacing" : ["error", "never"],
+        "arrow-parens" : ["error", "as-needed"],
         "func-call-spacing" : "error",
         "space-before-blocks" : ["error", "always"],
+        "padded-blocks": ["error", "never"],
         "quotes" : ["error", "single", { "avoidEscape" : true }],
         "camelcase" : ["error", { "properties" : "never" }],
         "no-trailing-spaces" : "error",
