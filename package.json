@@ -28,19 +28,19 @@
   },
   "devDependencies": {
     "chai": "~1.7.2",
-    "coffee-script": "~1.6.3",
     "eslint": "^3.15.0",
     "eslint-config-pedant": "^0.8.0",
     "mocha": "~1.21.4",
     "nyc": "^10.1.2"
   },
   "scripts": {
-    "lint": "eslint test",
+    "lint": "eslint .",
+    "pretest": "npm run lint",
     "test": "make test",
     "coverage": "make coverage"
   },
   "engines": {
-    "node": ">= 0.8.0"
+    "node": ">= 4.0"
   },
   "license": "MIT"
 }
