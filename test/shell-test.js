@@ -1,3 +1,4 @@
+/* eslint-disable padded-blocks */
 var assert = require('chai').assert,
     shell = require('..').shell;
 
