@@ -1,3 +1,4 @@
+/* eslint-disable padded-blocks */
 var assert = require('chai').assert,
     COA = require('..');
 
@@ -338,6 +339,29 @@ describe('Arg', function() {
 
 describe('Cmd', function() {
 
+    describe('Action', function() {
+
+        it('should declare few acts and pass result thru', function() {
+            return COA.Cmd()
+                .act(() => 12)
+                .act((opts, args, res) => `${res} 34`)
+                .do()
+                .then(res => assert.equal(res, '12 34'));
+        });
+
+        it('should not fail on empty act', function() {
+            return COA.Cmd().act().do();
+        });
+
+        it('should drop actions on force', function() {
+            return COA.Cmd()
+                .act(() => { throw new Error('Should be rewritten'); })
+                .act(() => 42, true)
+                .do().then(res => assert.equal(res, 42));
+        });
+
+    });
+
     var doTest = function(o) {
             assert.deepEqual(o, {
                 opts : { opt : 'value' },
@@ -487,7 +511,9 @@ describe('Cmd', function() {
 
     });
 
-    it('helpful(), name(), title()');
+    it('name()');
+    it('title()');
+    it('helpful()');
 
 });
 
