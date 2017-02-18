@@ -4,6 +4,7 @@ Yet another parser for command line options.
 
 [![NPM Status][npm-img]][npm]
 [![Travis Status][test-img]][travis]
+[![AppVeyor Status][appveyor-img]][appveyor]
 [![Coverage Status][coverage-img]][coveralls]
 [![Dependency Status][dependency-img]][david]
 
@@ -11,6 +12,8 @@ Yet another parser for command line options.
 [npm-img]:      https://img.shields.io/npm/v/coa.svg
 [travis]:       https://travis-ci.org/veged/coa
 [test-img]:     https://img.shields.io/travis/veged/coa.svg
+[appveyor]:     https://ci.appveyor.com/project/zxqfox/coa
+[appveyor-img]: https://ci.appveyor.com/api/projects/status/github/veged/coa?svg=true
 [coveralls]:    https://coveralls.io/r/veged/coa
 [coverage-img]: https://img.shields.io/coveralls/veged/coa.svg
 [david]:          https://david-dm.org/veged/coa
