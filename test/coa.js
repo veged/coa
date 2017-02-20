@@ -177,6 +177,22 @@ describe('Opt', function() {
 
     });
 
+    describe('Act in option', function() {
+
+        var cmd = COA.Cmd()
+            .opt()
+                .name('a')
+                .short('a')
+                .act(opts => ({ b : 'b' + opts.a }))
+                .act((opts, args, res) => ({ z : 'z' + opts.a + res.b }))
+                .end();
+
+        it('should return transformed value by act', () =>
+            cmd.do(['-a', 'est']).then(opts =>
+                assert.deepEqual(opts, { z : 'zestbest' })));
+
+    });
+
     describe('Only option (--version case)', function() {
 
         var ver = require('../package.json').version,
