@@ -1,7 +1,7 @@
 {
   "name": "coa",
   "description": "Command-Option-Argument: Yet another parser for command line options.",
-  "version": "1.0.1",
+  "version": "1.0.12",
   "homepage": "http://github.com/veged/coa",
   "author": "Sergey Berezhnoy <veged@ya.ru> (http://github.com/veged)",
   "maintainers": [
@@ -10,6 +10,12 @@
   ],
   "contributors": [
     "Sergey Belov <peimei@ya.ru> (http://github.com/arikon)"
+  ],
+  "files": [
+    "lib/",
+    "lib-cov/",
+    "index.js",
+    "README.ru.md"
   ],
   "repository": {
     "type": "git",
@@ -35,10 +41,6 @@
   "engines": {
     "node": ">= 0.8.0"
   },
-  "licenses": [
-    {
-      "type": "MIT"
-    }
-  ],
+  "license": "MIT",
   "optionalDependencies": {}
 }

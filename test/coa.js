@@ -485,6 +485,47 @@ describe('Cmd', function() {
 
         });
 
+
+        describe('Subcommand with a colon in the name', function() {
+
+            var cmd = COA.Cmd()
+                .cmd()
+                    .name('command:test')
+                    .opt()
+                        .name('opt')
+                        .long('opt')
+                        .end()
+                    .arg()
+                        .name('arg1')
+                        .end()
+                    .arg()
+                        .name('arg2')
+                        .arr()
+                        .end()
+                    .act(function(opts, args) {
+                        return { opts: opts, args: args };
+                    })
+                    .end();
+
+            describe('when specified on command line', function() {
+
+                it('should be invoked and accept passed opts and args', function() {
+                    return cmd.do(['command:test', '--opt', 'value', 'value', 'value 1', 'value 2'])
+                        .then(doTest);
+                });
+
+            });
+
+            describe('when invoked using invoke()', function() {
+
+                it('should be invoked and accept passed opts and args', function() {
+                    return cmd.invoke('command:test', invokeOpts, invokeArgs)
+                        .then(doTest);
+                });
+
+            });
+
+        });
     });
 
     it('helpful(), name(), title()');

@@ -1,7 +1,7 @@
 BIN = ./node_modules/.bin
 
 .PHONY: all
-all: lib
+all: lib lib-cov
 
 lib: $(foreach s,$(wildcard src/*.coffee),$(patsubst src/%.coffee,lib/%.js,$s))
 

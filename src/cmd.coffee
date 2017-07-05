@@ -1,6 +1,5 @@
 UTIL = require 'util'
 PATH = require 'path'
-Color = require('./color').Color
 Q = require('q')
 
 #inspect = require('eyes').inspector { maxLength: 99999, stream: process.stderr }
@@ -145,14 +144,14 @@ exports.Cmd = class Cmd
     Make command "helpful", i.e. add -h --help flags for print usage.
     @returns {COA.Cmd} this instance (for chainability)
     ###
-    helpful: ->
+    helpful: (cb) ->
         @opt()
             .name('help').title('Help')
             .short('h').long('help')
             .flag()
             .only()
             .act ->
-                return @usage()
+                return if cb then cb() else @usage()
             .end()
 
     ###*
@@ -188,30 +187,34 @@ exports.Cmd = class Cmd
     usage: ->
         res = []
 
-        if @_title then res.push @_fullTitle()
+        if @_title then res.push @_title
 
         res.push('', 'Usage:')
 
         if @_cmds.length then res.push(['', '',
-            Color('lred', @_fullName()),
-            Color('lblue', 'COMMAND'),
-            Color('lgreen', '[OPTIONS]'),
-            Color('lpurple', '[ARGS]')].join ' ')
+            @_fullName(),
+            '<command>',
+            '[options]',
+            '[<args>...]'].join ' ')
 
         if @_opts.length + @_args.length then res.push(['', '',
-            Color('lred', @_fullName()),
-            Color('lgreen', '[OPTIONS]'),
-            Color('lpurple', '[ARGS]')].join ' ')
+            @_fullName(),
+            '[options]',
+            '[<args>...]'].join ' ')
 
-        res.push(
-            @_usages(@_cmds, 'Commands'),
-            @_usages(@_opts, 'Options'),
-            @_usages(@_args, 'Arguments'))
+        if @_usages(@_cmds, 'Commands')
+            res.push(@_usages(@_cmds, 'Commands'))
+
+        if @_usages(@_args, 'Arguments')
+            res.push(@_usages(@_args, 'Arguments'))
+
+        if @_usages(@_opts, 'Options')
+            res.push(@_usages(@_opts, 'Options'))
 
         res.join '\n'
 
     _usage: ->
-        Color('lblue', @_name) + ' : ' + @_title
+        @_name + ' : ' + @_title
 
     _usages: (os, title) ->
         unless os.length then return
@@ -246,7 +249,7 @@ exports.Cmd = class Cmd
         while i = argv.shift()
             if not i.indexOf '-'
                 optSeen = true
-            if not optSeen and /^\w[\w-_]*$/.test(i)
+            if not optSeen and /^\w[\w-_:]*$/.test(i)
                 cmd = @_cmdsByName[i]
 
                 if not cmd and @_ext

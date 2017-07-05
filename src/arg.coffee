@@ -1,4 +1,3 @@
-Color = require('./color').Color
 Cmd = require('./cmd').Cmd
 Opt = require('./opt').Opt
 
@@ -98,8 +97,8 @@ exports.Arg = class Arg
     _usage: ->
         res = []
 
-        res.push Color('lpurple', @_name.toUpperCase()), ' : ', @_title
-        if @_req then res.push ' ', Color('lred', '(required)')
+        res.push @_name, ' : ', @_title
+        if @_req then res.push ' ', '(required)'
 
         res.join ''
 
