@@ -13,7 +13,6 @@
         "no-cond-assign": "off",
 
         "semi" : "error",
-        "indent" : ["error", 4],
         "no-mixed-spaces-and-tabs" : "error",
         "max-len" : ["error", { "code" : 120 }],
         "eol-last" : "error",
