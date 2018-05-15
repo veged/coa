@@ -128,6 +128,16 @@ describe('Opt', function() {
                 .short('a')
                 .def('aaa')
                 .end()
+            .opt()
+                .name('b')
+                .short('b')
+                .def(false)
+                .end()
+            .opt()
+                .name('c')
+                .short('c')
+                .def(0)
+                .end()
             .act(function(opts) {
                 return opts;
             });
@@ -135,7 +145,11 @@ describe('Opt', function() {
         it('should return default value if not specified', function() {
             return cmd.do()
                 .then(function(opts) {
-                    assert.equal(opts.a, 'aaa');
+                    assert.deepEqual(opts, {
+                        a : 'aaa',
+                        b : false,
+                        c : 0
+                    });
                 });
         });
 
