@@ -24,6 +24,7 @@
     "lib": "./lib"
   },
   "dependencies": {
+    "chalk": "^2.4.1",
     "q": "^1.1.2"
   },
   "devDependencies": {
