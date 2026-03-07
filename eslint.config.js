@@ -44,8 +44,7 @@ module.exports = [
                     'if' : { 'after' : false },
                     'for' : { 'after' : false },
                     'while' : { 'after' : false },
-                    'switch' : { 'after' : false },
-                    'catch' : { 'after' : false }
+                    'switch' : { 'after' : false }
                 }
             }],
             'array-bracket-spacing' : ['error', 'never'],
