@@ -29,17 +29,13 @@
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "chai": "^4.5.0",
-    "eslint": "^10.0.1",
-    "mocha": "^10.8.2",
-    "nyc": "^17.1.0"
+    "eslint": "^10.0.1"
   },
   "scripts": {
-    "clean": "rm -rf .nyc_output coverage",
-    "coverage": "nyc --reporter=text --reporter=html mocha; echo; echo 'Open coverage/index.html file in your browser'",
+    "coverage": "node --test --experimental-test-coverage 'test/*.js'",
     "lint": "eslint .",
     "pretest": "npm run lint",
-    "test": "nyc mocha"
+    "test": "node --test 'test/*.js'"
   },
   "engines": {
     "node": ">=20"

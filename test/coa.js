@@ -1,15 +1,8 @@
-var assert = require('chai').assert,
-    COA = require('..');
+'use strict';
 
-/**
- * Mocha BDD interface.
- */
-/** @name describe @function */
-/** @name it @function */
-/** @name before @function */
-/** @name after @function */
-/** @name beforeEach @function */
-/** @name afterEach @function */
+const { describe, it } = require('node:test');
+const assert = require('node:assert/strict');
+const COA = require('..');
 
 describe('Opt', function() {
 
@@ -18,8 +11,7 @@ describe('Opt', function() {
         var cmd = COA.Cmd();
 
         it('should fail', function() {
-            return cmd.do(['-a'])
-                .then(assert.fail, emptyFn);
+            return assert.rejects(cmd.do(['-a']));
         });
 
     });
@@ -42,7 +34,7 @@ describe('Opt', function() {
         it('should return passed values', function() {
             return cmd.do(['-a', 'a', '-b', 'b'])
                 .then(function(res) {
-                    assert.deepEqual(res, { a : 'a', b : 'b' });
+                    assert.deepStrictEqual(res, { a : 'a', b : 'b' });
                 });
         });
 
@@ -66,7 +58,7 @@ describe('Opt', function() {
         it('should return passed values', function() {
             return cmd.do(['--long1', 'long value', '--long2=another long value'])
                 .then(function(res) {
-                    assert.deepEqual(res, { long1 : 'long value', long2 : 'another long value' });
+                    assert.deepStrictEqual(res, { long1 : 'long value', long2 : 'another long value' });
                 });
         });
 
@@ -87,7 +79,7 @@ describe('Opt', function() {
         it('should return array of passed values', function() {
             return cmd.do(['-a', '1', '-a', '2'])
                 .then(function(res) {
-                    assert.deepEqual(res, { a : ['1', '2'] });
+                    assert.deepStrictEqual(res, { a : ['1', '2'] });
                 });
         });
 
@@ -106,14 +98,13 @@ describe('Opt', function() {
             });
 
         it('should fail if not specified', function() {
-            return cmd.do()
-                .then(assert.fail, emptyFn);
+            return assert.rejects(cmd.do());
         });
 
         it('should return passed value if specified', function() {
             return cmd.do(['-a', 'test'])
                 .then(function(opts) {
-                    assert.equal(opts.a, 'test');
+                    assert.strictEqual(opts.a, 'test');
                 });
         });
 
@@ -144,7 +135,7 @@ describe('Opt', function() {
         it('should return default value if not specified', function() {
             return cmd.do()
                 .then(function(opts) {
-                    assert.deepEqual(opts, {
+                    assert.deepStrictEqual(opts, {
                         a : 'aaa',
                         b : false,
                         c : 0
@@ -155,7 +146,7 @@ describe('Opt', function() {
         it('should return passed value if specified', function() {
             return cmd.do(['-a', 'test'])
                 .then(function(opts) {
-                    assert.equal(opts.a, 'test');
+                    assert.strictEqual(opts.a, 'test');
                 });
         });
 
@@ -177,14 +168,13 @@ describe('Opt', function() {
             });
 
         it('should fail if custom checks suppose to do so', function() {
-            return cmd.do(['-a', 'invalid'])
-                .then(assert.fail, emptyFn);
+            return assert.rejects(cmd.do(['-a', 'invalid']));
         });
 
         it('should return transformed value', function() {
             return cmd.do(['-a', 'test'])
                 .then(function(opts) {
-                    assert.deepEqual(opts.a, { value : 'test' });
+                    assert.deepStrictEqual(opts.a, { value : 'test' });
                 });
         });
 
@@ -202,7 +192,7 @@ describe('Opt', function() {
 
         it('should return transformed value by act', () =>
             cmd.do(['-a', 'est']).then(opts =>
-                assert.deepEqual(opts, { z : 'zestbest' })));
+                assert.deepStrictEqual(opts, { z : 'zestbest' })));
 
     });
 
@@ -227,15 +217,18 @@ describe('Opt', function() {
 
         it('should process the only() option', function() {
             return cmd.do(['--version'])
-                .then(assert.fail, function(res) {
-                    assert.equal(res, ver);
-                });
+                .then(
+                    () => { throw new Error('should have rejected'); },
+                    function(res) {
+                        assert.strictEqual(res.toString(), ver);
+                    }
+                );
         });
 
     });
 
-    it('input()');
-    it('output()');
+    it.todo('input()');
+    it.todo('output()');
 
 });
 
@@ -246,8 +239,7 @@ describe('Arg', function() {
         var cmd = COA.Cmd();
 
         it('should fail', function() {
-            return cmd.do(['test'])
-                .then(assert.fail, emptyFn);
+            return assert.rejects(cmd.do(['test']));
         });
 
     });
@@ -260,8 +252,7 @@ describe('Arg', function() {
                 .end();
 
         it('should fail', function() {
-            return cmd.do(['test', 'unknown'])
-                .then(assert.fail, emptyFn);
+            return assert.rejects(cmd.do(['test', 'unknown']));
         });
 
     });
@@ -280,7 +271,7 @@ describe('Arg', function() {
         it('should return array of passed values', function() {
             return cmd.do(['value 1', 'value 2'])
                 .then(function(args) {
-                    assert.deepEqual(args, { a : ['value 1', 'value 2'] });
+                    assert.deepStrictEqual(args, { a : ['value 1', 'value 2'] });
                 });
         });
 
@@ -298,14 +289,13 @@ describe('Arg', function() {
             });
 
         it('should fail if not specified', function() {
-            return cmd.do()
-                .then(assert.fail, emptyFn);
+            return assert.rejects(cmd.do());
         });
 
         it('should return passed value if specified', function() {
             return cmd.do(['value'])
                 .then(function(args) {
-                    assert.equal(args.a, 'value');
+                    assert.strictEqual(args.a, 'value');
                 });
         });
 
@@ -332,7 +322,7 @@ describe('Arg', function() {
         it('should return passed values', function() {
             return cmd.do(['--opt', 'value', 'value', 'value 1', 'value 2'])
                 .then(function(o) {
-                    assert.deepEqual(o, {
+                    assert.deepStrictEqual(o, {
                         opts : { opt : 'value' },
                         args : {
                             arg1 : 'value',
@@ -358,7 +348,7 @@ describe('Arg', function() {
         it('should return passed arg values', function() {
             return cmd.do(['--', 'raw', 'arg', 'values'])
                 .then(function(args) {
-                    assert.deepEqual(args, { raw : ['raw', 'arg', 'values'] });
+                    assert.deepStrictEqual(args, { raw : ['raw', 'arg', 'values'] });
                 });
         });
 
@@ -375,7 +365,7 @@ describe('Cmd', function() {
                 .act(() => 12)
                 .act((opts, args, res) => `${res} 34`)
                 .do()
-                .then(res => assert.equal(res, '12 34'));
+                .then(res => assert.strictEqual(res, '12 34'));
         });
 
         it('should not fail on empty act', function() {
@@ -386,13 +376,13 @@ describe('Cmd', function() {
             return COA.Cmd()
                 .act(() => { throw new Error('Should be rewritten'); })
                 .act(() => 42, true)
-                .do().then(res => assert.equal(res, 42));
+                .do().then(res => assert.strictEqual(res, 42));
         });
 
     });
 
     var doTest = function(o) {
-            assert.deepEqual(o, {
+            assert.deepStrictEqual(o, {
                 opts : { opt : 'value' },
                 args : {
                     arg1 : 'value',
@@ -458,8 +448,7 @@ describe('Cmd', function() {
         describe('when unexisting command invoked using invoke()', function() {
 
             it('should fail', function() {
-                return cmd.invoke('unexistent')
-                    .then(assert.fail, emptyFn);
+                return assert.rejects(cmd.invoke('unexistent'));
             });
 
         });
@@ -540,12 +529,8 @@ describe('Cmd', function() {
 
     });
 
-    it('name()');
-    it('title()');
-    it('helpful()');
+    it.todo('name()');
+    it.todo('title()');
+    it.todo('helpful()');
 
 });
-
-function emptyFn() {
-    // empty function
-}
