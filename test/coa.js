@@ -1,4 +1,3 @@
-/* eslint-disable padded-blocks */
 var assert = require('chai').assert,
     COA = require('..');
 

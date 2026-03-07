@@ -1,5 +1,3 @@
-/// <reference types="q"/>
-
 export const Arg: undefined;
 
 export const Opt: undefined;
@@ -20,7 +18,7 @@ export namespace classes {
         end(): Cmd;
         apply(...args: any[]): Arg;
         input(): Arg;
-        reject(...args: any[]): Arg;
+        reject(reason: any): any;
     }
 
     class Cmd {
@@ -39,10 +37,10 @@ export namespace classes {
         completable(): Cmd;
         usage(): string;
         run(argv: string[]): Cmd;
-        invoke(cmds?: string|string[], opts?: any, args?: any): Q.Promise<any>;
-        reject(reason: any): Q.Promise<any>;
+        invoke(cmds?: string|string[], opts?: any, args?: any): Promise<any>;
+        reject(reason: any): any;
         end(): Cmd;
-        do(argv: string[]): any;
+        do(argv: string[]): Promise<any>;
         extendable(pattern?: string): Cmd;
     }
 
@@ -64,7 +62,7 @@ export namespace classes {
         comp(fn: (opts: any) => any): Opt;
         end(): Cmd;
         apply(...args: any[]): void;
-        reject(...args: any[]): void;
+        reject(reason: any): any;
     }
 }
 
