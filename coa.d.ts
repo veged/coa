@@ -9,7 +9,7 @@ export namespace classes {
         title(title: string): Arg;
         arr(): Arg;
         req(): Arg;
-        val(validation: (this: Arg, value: any) => boolean): Arg;
+        val(validation: (this: Arg, value: any) => any): Arg;
         def(def: any): Arg;
         input(): Arg;
         output(): Arg;
@@ -53,7 +53,7 @@ export namespace classes {
         arr(): Opt;
         req(): Opt;
         only(): Opt;
-        val(validation: (this: Opt, value: any) => boolean): Opt;
+        val(validation: (this: Opt, value: any) => any): Opt;
         def(def: any): Opt;
         input(): Opt;
         output(): Opt;
