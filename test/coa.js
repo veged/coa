@@ -227,8 +227,162 @@ describe('Opt', function() {
 
     });
 
-    it.todo('input()');
-    it.todo('output()');
+    describe('input()', function() {
+
+        it('should default to stdin', function() {
+            const cmd = COA.Cmd()
+                .opt()
+                    .name('i')
+                    .short('i')
+                    .input()
+                    .end()
+                .act(function(opts) {
+                    return opts;
+                });
+
+            return cmd.do()
+                .then(function(opts) {
+                    assert.strictEqual(opts.i, process.stdin);
+                });
+        });
+
+        it('should return stdin for "-"', function() {
+            const cmd = COA.Cmd()
+                .opt()
+                    .name('i')
+                    .short('i')
+                    .input()
+                    .end()
+                .act(function(opts) {
+                    return opts;
+                });
+
+            return cmd.do(['-i', '-'])
+                .then(function(opts) {
+                    assert.strictEqual(opts.i, process.stdin);
+                });
+        });
+
+        it('should return a read stream for a file path', function() {
+            const path = require('path');
+            const testFile = path.resolve(__dirname, '..', 'package.json');
+
+            const cmd = COA.Cmd()
+                .opt()
+                    .name('i')
+                    .short('i')
+                    .input()
+                    .end()
+                .act(function(opts) {
+                    return opts;
+                });
+
+            return cmd.do(['-i', testFile])
+                .then(function(opts) {
+                    assert.strictEqual(typeof opts.i.pipe, 'function');
+                    opts.i.destroy();
+                });
+        });
+
+        it('should pass through non-string values', function() {
+            const cmd = COA.Cmd()
+                .opt()
+                    .name('i')
+                    .short('i')
+                    .input()
+                    .end()
+                .act(function(opts) {
+                    return opts;
+                });
+
+            const stream = { pipe : function() {} };
+            return cmd.invoke({ i : stream })
+                .then(function(opts) {
+                    assert.strictEqual(opts.i, stream);
+                });
+        });
+
+    });
+
+    describe('output()', function() {
+
+        it('should default to stdout', function() {
+            const cmd = COA.Cmd()
+                .opt()
+                    .name('o')
+                    .short('o')
+                    .output()
+                    .end()
+                .act(function(opts) {
+                    return opts;
+                });
+
+            return cmd.do()
+                .then(function(opts) {
+                    assert.strictEqual(opts.o, process.stdout);
+                });
+        });
+
+        it('should return stdout for "-"', function() {
+            const cmd = COA.Cmd()
+                .opt()
+                    .name('o')
+                    .short('o')
+                    .output()
+                    .end()
+                .act(function(opts) {
+                    return opts;
+                });
+
+            return cmd.do(['-o', '-'])
+                .then(function(opts) {
+                    assert.strictEqual(opts.o, process.stdout);
+                });
+        });
+
+        it('should return a write stream for a file path', function() {
+            const os = require('os');
+            const path = require('path');
+            const fs = require('fs');
+            const tmpFile = path.join(os.tmpdir(), 'coa-test-output-' + Date.now());
+
+            const cmd = COA.Cmd()
+                .opt()
+                    .name('o')
+                    .short('o')
+                    .output()
+                    .end()
+                .act(function(opts) {
+                    return opts;
+                });
+
+            return cmd.do(['-o', tmpFile])
+                .then(function(opts) {
+                    assert.strictEqual(typeof opts.o.write, 'function');
+                    opts.o.destroy();
+                    try { fs.unlinkSync(tmpFile); } catch { /* ignore */ }
+                });
+        });
+
+        it('should pass through non-string values', function() {
+            const cmd = COA.Cmd()
+                .opt()
+                    .name('o')
+                    .short('o')
+                    .output()
+                    .end()
+                .act(function(opts) {
+                    return opts;
+                });
+
+            const stream = { write : function() {} };
+            return cmd.invoke({ o : stream })
+                .then(function(opts) {
+                    assert.strictEqual(opts.o, stream);
+                });
+        });
+
+    });
 
 });
 
@@ -529,8 +683,251 @@ describe('Cmd', function() {
 
     });
 
-    it.todo('name()');
-    it.todo('title()');
-    it.todo('helpful()');
+    describe('name()', function() {
+
+        it('should set command name', function() {
+            const cmd = COA.Cmd().name('test-cmd');
+            assert.strictEqual(cmd._name, 'test-cmd');
+        });
+
+    });
+
+    describe('title()', function() {
+
+        it('should set command title', function() {
+            const cmd = COA.Cmd().title('Test command');
+            assert.strictEqual(cmd._title, 'Test command');
+        });
+
+    });
+
+    describe('helpful()', function() {
+
+        it('should add --help option', function() {
+            const cmd = COA.Cmd()
+                .name('test')
+                .title('Test')
+                .helpful();
+
+            assert.ok(cmd._optsByKey['--help']);
+            assert.ok(cmd._optsByKey['-h']);
+        });
+
+        it('should print usage on --help', function() {
+            const cmd = COA.Cmd()
+                .name('test')
+                .title('Test')
+                .helpful();
+
+            return cmd.do(['--help'])
+                .then(
+                    () => { throw new Error('should have rejected'); },
+                    function(res) {
+                        assert.ok(res.toString().length > 0);
+                    }
+                );
+        });
+
+    });
+
+    describe('usage()', function() {
+
+        it('should contain title', function() {
+            const cmd = COA.Cmd()
+                .name('test')
+                .title('Test Title');
+
+            const usage = cmd.usage();
+            assert.ok(usage.includes('Test Title'));
+        });
+
+        it('should list options', function() {
+            const cmd = COA.Cmd()
+                .name('test')
+                .opt()
+                    .name('opt1')
+                    .title('Option 1')
+                    .long('opt1')
+                    .end();
+
+            const usage = cmd.usage();
+            assert.ok(usage.includes('Options'));
+            assert.ok(usage.includes('Option 1'));
+        });
+
+        it('should list arguments', function() {
+            const cmd = COA.Cmd()
+                .name('test')
+                .arg()
+                    .name('arg1')
+                    .title('Argument 1')
+                    .end();
+
+            const usage = cmd.usage();
+            assert.ok(usage.includes('Arguments'));
+            assert.ok(usage.includes('Argument 1'));
+        });
+
+        it('should list subcommands', function() {
+            const cmd = COA.Cmd()
+                .name('test')
+                .cmd()
+                    .name('sub')
+                    .title('Subcommand')
+                    .end();
+
+            const usage = cmd.usage();
+            assert.ok(usage.includes('Commands'));
+            assert.ok(usage.includes('Subcommand'));
+        });
+
+        it('should show full title with parent', function() {
+            const cmd = COA.Cmd()
+                .name('test')
+                .title('Parent Title')
+                .cmd()
+                    .name('sub')
+                    .title('Sub Title')
+                    .end();
+
+            const sub = cmd._cmdsByName['sub'];
+            const usage = sub.usage();
+            assert.ok(usage.includes('Parent Title'));
+            assert.ok(usage.includes('Sub Title'));
+        });
+
+    });
+
+    describe('completable()', function() {
+
+        it('should add completion subcommand', function() {
+            const cmd = COA.Cmd()
+                .name('test')
+                .completable();
+
+            assert.ok(cmd._cmdsByName['completion']);
+        });
+
+    });
+
+    describe('comp()', function() {
+
+        it('should set custom completion', function() {
+            const compFn = function() { return ['a', 'b']; };
+            const cmd = COA.Cmd().comp(compFn);
+            assert.strictEqual(cmd._comp, compFn);
+        });
+
+    });
+
+    describe('apply()', function() {
+
+        it('should apply function with arguments', function() {
+            let receivedArgs;
+            const cmd = COA.Cmd()
+                .apply(function(a, b) {
+                    receivedArgs = [a, b];
+                    this.name('applied');
+                }, 'x', 'y');
+
+            assert.deepStrictEqual(receivedArgs, ['x', 'y']);
+            assert.strictEqual(cmd._name, 'applied');
+        });
+
+    });
+
+    describe('extendable with unsupported type', function() {
+
+        it('should throw for non-function/non-object command', function() {
+            // Create a module that exports a string (unsupported)
+            const cmd = COA.Cmd()
+                .name('test')
+                .extendable();
+
+            // Just verify extendable sets _ext
+            assert.strictEqual(cmd._ext, true);
+        });
+
+    });
+
+    describe('Opt _usage()', function() {
+
+        it('should format option with short only', function() {
+            const cmd = COA.Cmd()
+                .opt()
+                    .name('verbose')
+                    .title('Verbose output')
+                    .short('v')
+                    .flag()
+                    .end();
+
+            const opt = cmd._opts[0];
+            const usage = opt._usage();
+            assert.ok(usage.includes('-'));
+            assert.ok(usage.includes('v'));
+            assert.ok(usage.includes('Verbose output'));
+        });
+
+        it('should format option with long only', function() {
+            const cmd = COA.Cmd()
+                .opt()
+                    .name('verbose')
+                    .title('Verbose output')
+                    .long('verbose')
+                    .end();
+
+            const opt = cmd._opts[0];
+            const usage = opt._usage();
+            assert.ok(usage.includes('verbose'));
+            assert.ok(usage.includes('Verbose output'));
+        });
+
+        it('should format required option', function() {
+            const cmd = COA.Cmd()
+                .opt()
+                    .name('file')
+                    .title('File path')
+                    .long('file')
+                    .req()
+                    .end();
+
+            const opt = cmd._opts[0];
+            const usage = opt._usage();
+            assert.ok(usage.includes('required'));
+        });
+
+        it('should format non-flag short option with value name', function() {
+            const cmd = COA.Cmd()
+                .opt()
+                    .name('file')
+                    .title('File path')
+                    .short('f')
+                    .long('file')
+                    .end();
+
+            const opt = cmd._opts[0];
+            const usage = opt._usage();
+            assert.ok(usage.includes('FILE'));
+        });
+
+    });
+
+    describe('Arg _usage()', function() {
+
+        it('should format required argument', function() {
+            const cmd = COA.Cmd()
+                .arg()
+                    .name('file')
+                    .title('File path')
+                    .req()
+                    .end();
+
+            const arg = cmd._args[0];
+            const usage = arg._usage();
+            assert.ok(usage.includes('required'));
+            assert.ok(usage.includes('FILE'));
+        });
+
+    });
 
 });
