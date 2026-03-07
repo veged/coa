@@ -6,7 +6,7 @@ module.exports = [
     js.configs.recommended,
     {
         languageOptions : {
-            ecmaVersion : 2022,
+            ecmaVersion : 2024,
             sourceType : 'commonjs',
             globals : {
                 require : 'readonly',
@@ -50,14 +50,14 @@ module.exports = [
             }],
             'array-bracket-spacing' : ['error', 'never'],
             'arrow-parens' : ['error', 'as-needed'],
-            'func-call-spacing' : 'error',
+
             'space-before-blocks' : ['error', 'always'],
             'padded-blocks' : ['error', 'never'],
             'quotes' : ['error', 'single', { 'avoidEscape' : true }],
             'camelcase' : ['error', { 'properties' : 'never' }],
             'no-trailing-spaces' : 'error',
             'comma-dangle' : ['error', 'never'],
-            'no-prototype-builtins' : 'off'
+            'no-prototype-builtins' : 'error'
         }
     },
     {
@@ -71,8 +71,7 @@ module.exports = [
             '.idea/',
             '*.iml',
             'node_modules/',
-            'coverage/',
-            '.nyc_output/'
+            'coverage/'
         ]
     }
 ];

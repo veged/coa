@@ -3,4 +3,3 @@
 node_modules/
 !node_modules/coa*.js
 coverage/
-.nyc_output/
