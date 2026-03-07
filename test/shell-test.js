@@ -8,7 +8,7 @@ describe('shell', function() {
 
     describe('escape()', function() {
 
-        var escape = shell.escape;
+        const escape = shell.escape;
 
         it('Should wrap values with spaces in double quotes', function() {
             assert.strictEqual(escape('asd abc'), '"asd abc"');
@@ -38,7 +38,7 @@ describe('shell', function() {
 
     describe('unescape()', function() {
 
-        var unescape = shell.unescape;
+        const unescape = shell.unescape;
 
         it('Should strip double quotes at the both ends', function() {
             assert.strictEqual(unescape('"asd"'), 'asd');

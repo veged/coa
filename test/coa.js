@@ -8,7 +8,7 @@ describe('Opt', function() {
 
     describe('Unknown option', function() {
 
-        var cmd = COA.Cmd();
+        const cmd = COA.Cmd();
 
         it('should fail', function() {
             return assert.rejects(cmd.do(['-a']));
@@ -18,7 +18,7 @@ describe('Opt', function() {
 
     describe('Short options', function() {
 
-        var cmd = COA.Cmd()
+        const cmd = COA.Cmd()
             .opt()
                 .name('a')
                 .short('a')
@@ -42,7 +42,7 @@ describe('Opt', function() {
 
     describe('Long options', function() {
 
-        var cmd = COA.Cmd()
+        const cmd = COA.Cmd()
             .opt()
                 .name('long1')
                 .long('long1')
@@ -66,7 +66,7 @@ describe('Opt', function() {
 
     describe('Array option', function() {
 
-        var cmd = COA.Cmd()
+        const cmd = COA.Cmd()
             .opt()
                 .name('a')
                 .short('a')
@@ -87,7 +87,7 @@ describe('Opt', function() {
 
     describe('Required option', function() {
 
-        var cmd = COA.Cmd()
+        const cmd = COA.Cmd()
             .opt()
                 .name('a')
                 .short('a')
@@ -112,7 +112,7 @@ describe('Opt', function() {
 
     describe('Option with default value', function() {
 
-        var cmd = COA.Cmd()
+        const cmd = COA.Cmd()
             .opt()
                 .name('a')
                 .short('a')
@@ -154,7 +154,7 @@ describe('Opt', function() {
 
     describe('Validated / transformed option', function() {
 
-        var cmd = COA.Cmd()
+        const cmd = COA.Cmd()
             .opt()
                 .name('a')
                 .short('a')
@@ -182,7 +182,7 @@ describe('Opt', function() {
 
     describe('Act in option', function() {
 
-        var cmd = COA.Cmd()
+        const cmd = COA.Cmd()
             .opt()
                 .name('a')
                 .short('a')
@@ -198,7 +198,7 @@ describe('Opt', function() {
 
     describe('Only option (--version case)', function() {
 
-        var ver = require('../package.json').version,
+        const ver = require('../package.json').version,
             cmd = COA.Cmd()
                 .opt()
                     .name('version')
@@ -236,7 +236,7 @@ describe('Arg', function() {
 
     describe('Unknown arg', function() {
 
-        var cmd = COA.Cmd();
+        const cmd = COA.Cmd();
 
         it('should fail', function() {
             return assert.rejects(cmd.do(['test']));
@@ -246,7 +246,7 @@ describe('Arg', function() {
 
     describe('Unknown arg after known', function() {
 
-        var cmd = COA.Cmd()
+        const cmd = COA.Cmd()
             .arg()
                 .name('a')
                 .end();
@@ -259,7 +259,7 @@ describe('Arg', function() {
 
     describe('Array arg', function() {
 
-        var cmd = COA.Cmd()
+        const cmd = COA.Cmd()
             .arg()
                 .name('a')
                 .arr()
@@ -279,7 +279,7 @@ describe('Arg', function() {
 
     describe('Required arg', function() {
 
-        var cmd = COA.Cmd()
+        const cmd = COA.Cmd()
             .arg()
                 .name('a')
                 .req()
@@ -303,7 +303,7 @@ describe('Arg', function() {
 
     describe('Args after options', function() {
 
-        var cmd = COA.Cmd()
+        const cmd = COA.Cmd()
             .opt()
                 .name('opt')
                 .long('opt')
@@ -336,7 +336,7 @@ describe('Arg', function() {
 
     describe('Raw args', function() {
 
-        var cmd = COA.Cmd()
+        const cmd = COA.Cmd()
             .arg()
                 .name('raw')
                 .arr()
@@ -381,7 +381,7 @@ describe('Cmd', function() {
 
     });
 
-    var doTest = function(o) {
+    const doTest = function(o) {
             assert.deepStrictEqual(o, {
                 opts : { opt : 'value' },
                 args : {
@@ -399,7 +399,7 @@ describe('Cmd', function() {
 
     describe('Subcommand', function() {
 
-        var cmd = COA.Cmd()
+        const cmd = COA.Cmd()
             .cmd()
                 .name('command')
                 .opt()
@@ -460,7 +460,7 @@ describe('Cmd', function() {
         describe('default scheme: cmd.extendable()', function() {
 
             describe('when described as a function', function() {
-                var cmd = COA.Cmd()
+                const cmd = COA.Cmd()
                     .name('coa')
                     .extendable();
 
@@ -471,7 +471,7 @@ describe('Cmd', function() {
             });
 
             describe('when described as an COA.Cmd() object', function() {
-                var cmd = COA.Cmd()
+                const cmd = COA.Cmd()
                     .name('coa')
                     .extendable();
 
@@ -482,7 +482,7 @@ describe('Cmd', function() {
             });
 
             describe('2nd level subcommand', function() {
-                var cmd = COA.Cmd()
+                const cmd = COA.Cmd()
                     .name('coa')
                     .cmd()
                     .name('test')
@@ -500,7 +500,7 @@ describe('Cmd', function() {
         describe("common prefix: cmd.extendable('coa-')", function() {
 
             describe('when described as a function', function() {
-                var cmd = COA.Cmd()
+                const cmd = COA.Cmd()
                     .name('coa')
                     .extendable('coa-');
 
@@ -515,7 +515,7 @@ describe('Cmd', function() {
         describe("format string: cmd.extendable('coa-%s')", function() {
 
             describe('when described as a function', function() {
-                var cmd = COA.Cmd()
+                const cmd = COA.Cmd()
                     .name('coa')
                     .extendable('coa-%s');
 
