@@ -3,21 +3,9 @@
 Yet another parser for command line options.
 
 [![NPM Status][npm-img]][npm]
-[![Travis Status][test-img]][travis]
-[![AppVeyor Status][appveyor-img]][appveyor]
-[![Coverage Status][coverage-img]][coveralls]
-[![Dependency Status][dependency-img]][david]
 
-[npm]:          https://www.npmjs.org/package/coa
-[npm-img]:      https://img.shields.io/npm/v/coa.svg
-[travis]:       https://travis-ci.org/veged/coa
-[test-img]:     https://img.shields.io/travis/veged/coa.svg
-[appveyor]:     https://ci.appveyor.com/project/zxqfox/coa
-[appveyor-img]: https://ci.appveyor.com/api/projects/status/github/veged/coa?svg=true
-[coveralls]:    https://coveralls.io/r/veged/coa
-[coverage-img]: https://img.shields.io/coveralls/veged/coa.svg
-[david]:          https://david-dm.org/veged/coa
-[dependency-img]: http://img.shields.io/david/veged/coa.svg
+[npm]:     https://www.npmjs.org/package/coa
+[npm-img]: https://img.shields.io/npm/v/coa.svg
 
 ## What is it?
 
@@ -31,7 +19,7 @@ Once you write definition in terms of commands, options and arguments you automa
 ### Other features
 
 * Rich types for options and arguments, such as arrays, boolean flags and required
-* Commands can be async throught using promising (powered by [Q](https://github.com/kriskowal/q))
+* Commands can be async through native promises
 * Easy submoduling some existing commands to new top-level one
 * Combined validation and complex parsing of values
 
@@ -173,7 +161,7 @@ Invoke specified (or current) command using provided options and arguments.<br>
 **@param** *String|Array* `cmds`  subcommand to invoke (optional)<br>
 **@param** *Object* `opts`  command options (optional)<br>
 **@param** *Object* `args`  command arguments (optional)<br>
-**@returns** *Q.Promise*
+**@returns** *Promise*
 
 #### Cmd.reject
 Return reject of actions results promise.<br>
@@ -181,7 +169,7 @@ Use in .act() for return with error.<br>
 **@param** *Object* `reason` reject reason<br>
     You can customize toString() method and exitCode property
     of reason object.<br>
-**@returns** *Q.promise* rejected promise
+**@returns** *Promise* rejected promise
 
 #### Cmd.end
 Finish chain for current subcommand and return parent command instance.<br>
